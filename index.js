@@ -15,12 +15,12 @@ app.get('/data', async (req, res) => {
     try {
         var data = JSON.parse('{}');
 
-        await pool.query(`SELECT id, index, cast(number as numeric(4,2)) as number, code, '[]'::json as children FROM job_categories WHERE index = 1 ORDER BY number ASC`)
+        await pool.query(`SELECT id, index, number, code, '[]'::json as children FROM job_categories WHERE index = 1 ORDER BY number ASC`)
         .then(categories =>{
             data.categories = categories.rows;
         });
 
-        await pool.query(`SELECT id, index, cast(number as numeric(4,2)) as number, code, '[]'::json as children FROM job_categories WHERE index = 2 ORDER BY number ASC`)
+        await pool.query(`SELECT id, index, number, code, '[]'::json as children FROM job_categories WHERE index = 2 ORDER BY number ASC`)
         .then(subcategories =>{
             subcategories.rows.forEach(row=>{
                 data.categories[Math.floor(row.number)-1].children.push(row);
