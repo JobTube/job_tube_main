@@ -1,6 +1,6 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const client = new Client({
+const pool = new Pool({
     user: 'job_tube_p2m7_user',
     password: 'HGrQ76WcxAcAsUDuq1trpk3k6FrRVCcg',
     host: 'csej53dsvqrc73f4nkn0-a.oregon-postgres.render.com',
@@ -9,4 +9,4 @@ const client = new Client({
     ssl: true,
 });
 
-module.exports = client;
+module.exports = pool;
