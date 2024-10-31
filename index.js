@@ -60,13 +60,13 @@ app.get('/data', async (req, res) => {
     }
 });
 
-app.post('/add-user', bodyParser.urlencoded(), async (req, res) => {
+app.post('/add-user', async (req, res) => {
     try {
-        await pool.query(
-            `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
-            [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
-        );
-        res.send('New user');
+        // await pool.query(
+        //     `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
+        //     [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
+        // );
+        res.send('Body: ' + req.body);
     }catch (err) {
         res.send('Taken an error: ' + err);
     }
