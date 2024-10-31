@@ -60,7 +60,7 @@ app.get('/data', async (req, res) => {
     }
 });
 
-app.post('/add-user', async (req, res) => {
+app.post('/add-user', (req, res) => {
     try {
         // await pool.query(
         //     `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
