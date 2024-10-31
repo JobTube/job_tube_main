@@ -68,7 +68,7 @@ app.post('/add-user', async (req, res) => {
         );
         res.send('New user');
     }catch (err) {
-        res.send(err);
+        res.send('Taken an error: ' + err);
     }
 });
 
@@ -82,3 +82,9 @@ app.get('/admin', (req, res) => {
 });
 
 app.listen(3000);
+
+/*
+    git add .
+    git commit -m "restore api"
+    git push origin master
+*/
