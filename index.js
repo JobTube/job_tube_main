@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
+const md5 = require('js-md5');
 
 const app = express();
 
@@ -59,6 +60,18 @@ app.get('/data', async (req, res) => {
     }
 });
 
+app.post('/add-user/:index/:user/:email/:password/:employment?', async (req, res) => {
+    try {
+        await pool.query(
+            `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
+            [req.params.index, req.params.user, md5(`SET_USER_DATA_${req.params.password}`), req.params.email, req.params.employment || NULL]
+        );
+        res.send('New user');
+    }catch (err) {
+        res.send(err);
+    }
+});
+
 app.get('/admin', (req, res) => {
     res.render(
         __dirname + '/pages/admin.ejs',
@@ -68,4 +81,4 @@ app.get('/admin', (req, res) => {
     )
 });
 
-app.listen(3000);
+// app.listen(3000);
