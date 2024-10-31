@@ -60,11 +60,11 @@ app.get('/data', async (req, res) => {
     }
 });
 
-app.post('/add-user/:index/:user/:email/:password/:employment?', async (req, res) => {
+app.post('/add-user', async (req, res) => {
     try {
         await pool.query(
             `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
-            [req.params.index, req.params.user, md5(`SET_USER_DATA_${req.params.password}`), req.params.email, req.params.employment || NULL]
+            [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
         );
         res.send('New user');
     }catch (err) {
