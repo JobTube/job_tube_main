@@ -60,7 +60,7 @@ app.get('/data', async (req, res) => {
     }
 });
 
-app.post('/add-user', async (req, res) => {
+app.post('/add-user', bodyParser.urlencoded(), async (req, res) => {
     try {
         await pool.query(
             `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
@@ -87,4 +87,5 @@ app.listen(3000);
     git add .
     git commit -m "restore api"
     git push origin master
+    
 */
