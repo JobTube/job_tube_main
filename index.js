@@ -75,7 +75,7 @@ app.get('/e', async(req, res)=>{
 
 app.post('/add-user', async(req, res) => {
     try {
-        await pool.query(`SELECT confirm FROM users WHERE email = 'vvv'`)
+        await pool.query(`SELECT confirm FROM users WHERE email = '${req.body.user}'`)
         .then(count=>{
             if(count.rows.length === 0){
                 res.send(2);
