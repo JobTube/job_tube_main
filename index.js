@@ -60,25 +60,40 @@ app.get('/data', async (req, res) => {
     }
 });
 
-app.get('/add-user/:index/:user/:email/:password/:employment?', async(req, res) => {
-    try {
-        await pool.query(
-            `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
-            [req.params.index, req.params.user, md5(`SET_USER_DATA_${req.params.password}`), req.params.email, req.params.employment]
-        );
-        res.send(req.params);
-    }catch (err) {
-        res.send('Taken an error: ' + err);
-    }
+app.get('/e', async(req, res)=>{
+    await pool.query(`SELECT confirm FROM users WHERE email = 'vvv'`)
+    .then(count=>{
+        if(count.rows.length === 0){
+            res.send('z');
+        }else if(!count.rows[0].confirm){
+            res.send('n');
+        }else if(count.rows[0].confirm){
+            res.send('m');
+        }
+    });
 });
 
 app.post('/add-user', async(req, res) => {
     try {
-        await pool.query(
-            `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
-            [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
-        );
-        res.send(req.body);
+        await pool.query(`SELECT confirm FROM users WHERE email = 'vvv'`)
+        .then(count=>{
+            if(count.rows.length === 0){
+                res.send(2);
+            }else if(!count.rows[0].confirm){
+                res.send(1);
+            }else if(count.rows[0].confirm){
+                pool.query(
+                    `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
+                    [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
+                );
+                res.send(0);
+            }
+        });
+        // await pool.query(
+        //     `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
+        //     [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
+        // );
+        // res.send(req.body);
     }catch (err) {
         res.send('Taken an error: ' + err);
     }
