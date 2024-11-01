@@ -82,10 +82,10 @@ app.post('/add-user', async(req, res) => {
             }else if(!count.rows[0].confirm){
                 res.send(1);
             }else if(count.rows[0].confirm){
-                pool.query(
-                    `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
-                    [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
-                );
+                // pool.query(
+                //     `INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`, 
+                //     [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]
+                // );
                 res.send(0);
             }
         });
