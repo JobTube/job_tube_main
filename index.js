@@ -91,7 +91,7 @@ app.post('/add-user', async(req, res) => {
             res.json({"Status": 1});
         }
     }catch (err) {
-        res.json({"Status": 0, "error": err});
+        res.sendStatus(err);
     }
 });
 
