@@ -34,17 +34,17 @@ app.get('/data', async (req, res) => {
             data.countries = countries.rows;
         });
         
-        await pool.query(`SELECT * FROM job_seekers ORDER BY id DESC LIMIT 10`)
+        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
         .then(job_seekers=>{
             data.job_seekers = job_seekers.rows;
         });
     
-        await pool.query(`SELECT * FROM offers ORDER BY id DESC LIMIT 10`)
+        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
         .then(offers=>{
             data.offers = offers.rows;
         });
     
-        await pool.query(`SELECT * FROM freelancers ORDER BY id DESC LIMIT 10`)
+        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
         .then(freelancers=>{
             data.freelancers = freelancers.rows;
         });
@@ -79,7 +79,7 @@ app.get('/e/:mail', async(req, res)=>{
 app.post('/add-user', async(req, res) => {
     try {
         await pool.query(`INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`,
-            [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.params.mail, req.body.employment]);
+            [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.params.email, req.body.employment]);
 
             res.json({"Status": 3});
 
