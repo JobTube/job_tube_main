@@ -15,6 +15,21 @@
             "username": "job_tube_p2m7_user",
             "password": "HGrQ76WcxAcAsUDuq1trpk3k6FrRVCcg",
             "connectionTimeout": 30
+        },
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true
+                }
+            },
+            "previewLimit": 50,
+            "server": "dpg-csks5168ii6s73809gig-a.oregon-postgres.render.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "username": "job_tube_rzpe_user",
+            "database": "job_tube_rzpe",
+            "name": "JobTube Database",
+            "password": "bAlgwePbcXQHP16SjmM3xSEPCiww3waG"
         }
     ]
 }
