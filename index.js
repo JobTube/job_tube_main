@@ -49,7 +49,7 @@ app.get('/data', async (req, res) => {
             data.freelancers = freelancers.rows;
         });
     
-        await pool.query(`SELECT * FROM talents ORDER BY id DESC LIMIT 10`)
+        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
         .then(talents=>{
             data.talents = talents.rows;
         });
