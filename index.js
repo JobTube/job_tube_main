@@ -84,7 +84,7 @@ app.post('/add-user', async(req, res) => {
         //     res.json({"name": "successful", "code": "3"});
 
         const check = await pool.query(`SELECT confirm FROM users WHERE email = '${req.body.email}'`);
-        if (!result.rows.length) {
+        if (!check.rows.length) {
             res.json({"name": "successful", "code": "3"});
             await pool.query(`INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`,
                 [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]);
