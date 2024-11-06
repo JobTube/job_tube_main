@@ -81,18 +81,18 @@ app.post('/add-user', async(req, res) => {
         await pool.query(`INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`,
             [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]);
 
-            res.json({"name": "Successful", "code": "3"});
+            res.json({"name": "successful", "code": "3"});
 
         // const check = await pool.query(`SELECT confirm FROM users WHERE email = '${req.body.email}'`);
         // if (!check.rows[0].exists) {
-        //     res.json({"name": "Successful", "code": "3"});
+        //     res.json({"name": "successful", "code": "3"});
         //     await pool.query(`INSERT INTO users (index, username, password, email) VALUES ($1, $2, $3, $4);`,
         //         [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.mail, req.body.employment]);
         //     sendConfirmationCode("e1000.tavakkulov@gmail.com", req.body.code).catch(console.error);
         // } else if(!count.rows[0].confirm){
-        //     res.json({"name": "Successful", "code": "2"});
+        //     res.json({"name": "successful", "code": "2"});
         // }else if(count.rows[0].confirm){
-        //     res.json({"name": "Successful", "code": "1"});
+        //     res.json({"name": "successful", "code": "1"});
         // }
     }catch (err) {
         res.json(err);
@@ -102,7 +102,7 @@ app.post('/add-user', async(req, res) => {
 app.post('/user-confirm', async(req, res) => {
     try {
         await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.mail}'`);
-        res.json({"name": "Successful", "code": "1"});
+        res.json({"name": "successful", "code": "1"});
     } catch (err) {
         res.json(err);
     }
