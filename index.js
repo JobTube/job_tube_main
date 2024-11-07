@@ -3,6 +3,7 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const md5 = require('js-md5');
+const { v4: uuidv4, } = require('uuid');
 
 const app = express();
 
@@ -86,8 +87,8 @@ app.post('/add-user', async(req, res) => {
         const check = await pool.query(`SELECT confirm FROM users WHERE email = '${req.body.email}'`);
         if (!check.rows.length) {
             res.json({"name": "successful", "code": "3"});
-            await pool.query(`INSERT INTO users (index, username, password, email, employment) VALUES ($1, $2, $3, $4, $5);`,
-                [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.employment]);
+            await pool.query(`INSERT INTO users (index, username, password, email, token, employment) VALUES ($1, $2, $3, $4, $5, $6);`,
+                [req.body.index, req.body.user, md5(`SET_USER_DATA_${req.body.password}`), req.body.email, uuidv4(), req.body.employment]);
             sendConfirmationCode("e1000.tavakkulov@gmail.com", req.body.code).catch(console.error);
         } else {
             res.json({"name": "successful", "code": count.rows[0].confirm ? "1" : "2"});
