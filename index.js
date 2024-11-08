@@ -80,7 +80,7 @@ app.post('/add-user', async(req, res) => {
 
 app.post('/user-confirm', async(req, res) => {
     try {
-        await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.mail}'`);
+        await pool.query(`UPDATE users SET confirm = 1 WHERE password='${req.body.password}'`);
         res.json({"name": "successful", "code": "0"});
     } catch (err) {
         res.json(err);
