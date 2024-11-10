@@ -15,9 +15,20 @@ const pool = require('./connection');
 const sendConfirmationCode = require('./send_confirmation_code');
 const generateMd5 = require('./generate_code');
 
-app.get('/data', async (req, res) => {
+app.get('/data/:token?', async (req, res) => {
     try {
         var data = JSON.parse('{}');
+        const user = req.params.token || "Guest";
+
+        if(user == "Guest"){
+            data.user = JSON.parse(`"id": 0, "username": "Guest"`);
+        }else{
+            await pool.query(`SELECT id, index, username, email, employment, followers, following FROM users`)
+            .then(users =>{
+                data.user = users.rows[0];
+            });
+            
+        }
 
         await pool.query(`SELECT id, index, number, code, '[]'::json as children FROM job_categories WHERE index = 1 ORDER BY number ASC`)
         .then(categories =>{
@@ -75,6 +86,19 @@ app.post('/add-user', async(req, res) => {
             sendConfirmationCode("e1000.tavakkulov@gmail.com", req.body.code).catch(console.error);
         } else {
             res.json({"name": "successful", "code": !count.rows[0].confirm ? "1" : "2"});
+        }
+    }catch (err) {
+        res.json(err);
+    }
+});
+
+app.post('/user-login', async(req, res) => {
+    try {
+        const check = await pool.query(`SELECT token FROM users WHERE password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' AND email='${req.body.email}';`);
+        if (check.rows.length) {
+            res.json({"name": "successful", "code": count.rows[0].token});
+        } else {
+            res.json({"name": "successful", "code": "1"});
         }
     }catch (err) {
         res.json(err);
