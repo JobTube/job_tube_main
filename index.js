@@ -18,9 +18,9 @@ const generateMd5 = require('./generate_code');
 app.get('/data/:token?', async (req, res) => {
     try {
         var data = JSON.parse('{}');
-        const user = req.params.token || "Guest";
+        const token = req.params.token || "Guest";
 
-        if(user == "Guest"){
+        if(token == "Guest"){
             data.user = JSON.parse(`"id": 0, "username": "Guest"`);
         }else{
             await pool.query(`SELECT id, index, username, email, employment, followers, following FROM users`)
