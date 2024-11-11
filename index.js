@@ -98,7 +98,7 @@ app.post('/user-login', async(req, res) => {
         if (check.rows.length) {
             res.json({"name": "successful", "code": check.rows[0].token});
         } else {
-            res.json({"name": "successful", "code": "1"});
+            res.json({"name": "successful", "code": "0"});
         }
     }catch (err) {
         res.json(err);
