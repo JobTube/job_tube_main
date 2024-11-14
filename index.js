@@ -1,19 +1,24 @@
 const express = require('express');
+const fs = require('fs');
 const http = require('http');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
-const md5 = require('js-md5');
+
 const { v4: uuidv4, } = require('uuid');
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extend: true }));
 
-app.set("view engine", "ejs");
-app.use(express.static("public"));
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
 app.use(express.urlencoded({ extend: true }));
 
 const pool = require('./connection');
 const sendConfirmationCode = require('./send_confirmation_code');
 const generateMd5 = require('./generate_code');
+const upload_profile = require('./upload_profile');
+const upload_record = require('./upload_record');
 
 app.get('/data/:token?', async (req, res) => {
     try {
@@ -70,7 +75,7 @@ app.get('/data/:token?', async (req, res) => {
         res.json(data);
     } catch (err) {
       console.error(err);
-      res.status(500).send('Internal Server Error');
+      res.sendStatus(500);
     }
 });
 
@@ -105,20 +110,6 @@ app.post('/user-login', async(req, res) => {
     }
 });
 
-app.get('/ex/:email', async(req, res) => {
-    try {
-        const check = await pool.query(`SELECT token FROM users WHERE email='${req.params.email}';`);
-        console.log(check.rows);
-        if (check.rows.length) {
-            res.json({"email": req.params.email, "name": "successful", "code": check.rows[0].token});
-        } else {
-            res.json({"email": req.params.email, "name": "successful", "code": "1"});
-        }
-    }catch (err) {
-        res.json(err);
-    }
-});
-
 app.post('/user-confirm', async(req, res) => {
     try {
         await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`);
@@ -127,6 +118,20 @@ app.post('/user-confirm', async(req, res) => {
         res.json(err);
     }
 });
+
+// https://jobtube-1bqr.onrender.com/user-data/${widget.user.token}
+
+app.get('/user-data/:token', (req, res) => {
+    const filePath = `${__dirname}/files/${req.params.token}/profile.png`;
+    fs.exists(filePath, function (exists) {
+        res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
+        exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
+    });
+});
+
+app.post('/add-profile/', upload_profile.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
+
+app.post('/video-record/', upload_record.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
 
 app.get('/admin', (req, res) => {
     res.render(
