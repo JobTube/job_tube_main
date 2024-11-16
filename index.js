@@ -81,17 +81,27 @@ app.get('/data/:token?', async (req, res) => {
 
 app.post('/add-user', async(req, res) => {
     try {
-        const check = await pool.query(`SELECT confirm FROM users WHERE email = '${req.body.email}'`);
+        let sendMail = false;
+        const check = await pool.query(`SELECT index, username, password, confirm FROM users WHERE email = '${req.body.email}'`);
         if (!check.rows.length) {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
                 `INSERT INTO users (index, username, password, email, token, employment) VALUES ($1, $2, $3, $4, $5, $6);`,
                 [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, uuidv4(), req.body.employment]
             );
-            sendConfirmationCode("e1000.tavakkulov@gmail.com", req.body.code).catch(console.error);
+            sendMail = true;
         } else {
-            res.json({"name": "successful", "code": !check.rows[0].confirm ? "1" : "2"});
+            if(check.rows[0].index == req.body.index
+                && check.rows[0].username == req.body.username
+                && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`)
+                && !check.rows[0].confirm){
+                    res.json({"name": "successful", "code": "1"});
+                    sendMail = true;
+            }else{
+                res.json({"name": "successful", "code": "2"});
+            }
         }
+        if(sendMail) sendConfirmationCode("e1000.tavakkulov@gmail.com", req.body.code).catch(console.error);
     }catch (err) {
         res.json(err);
     }
