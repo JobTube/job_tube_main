@@ -109,7 +109,7 @@ app.post('/add-user', async(req, res) => {
 
 app.post('/user-login', async(req, res) => {
     try {
-        const check = await pool.query(`SELECT token FROM users WHERE password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' AND email='${req.body.email}';`);
+        const check = await pool.query(`SELECT token FROM users WHERE password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' AND email='${req.body.email}' AND confirm = TRUE;`);
         if (check.rows.length) {
             res.json({"name": "successful", "code": check.rows[0].token});
         } else {
