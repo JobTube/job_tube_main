@@ -112,14 +112,17 @@ app.post('/user-login', async(req, res) => {
 
 app.post('/user-confirm', async(req, res) => {
     try {
-        await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`);
-        res.json({"name": "successful", "code": "0"});
+        await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`)
+        .then(() => {
+            fs.mkdirSync(`files/${req.body.path}/`);
+            res.json({"name": "successful", "code": "0"});
+        });
     } catch (err) {
         res.json(err);
     }
 });
 
-// https://jobtube-1bqr.onrender.com/user-data/${widget.user.token}
+// https://jobtube-1bqr.onrender.com/user-data/7303b5a7-a5b4-4b6d-82e3-0994d8ed571f
 
 app.get('/user-data/:token', (req, res) => {
     const filePath = `${__dirname}/files/${req.params.token}/profile.png`;
