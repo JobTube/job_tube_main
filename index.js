@@ -152,7 +152,7 @@ app.get('/user-data/:token', (req, res) => {
 app.get('/user-data/', (req, res) => {
     const filePath = `./files/profile.png`;
     fs.readdirSync('./files/').forEach(file => {
-        console.log(file);
+        console.log('in directory: ' + file);
     });
     fs.exists(filePath, function (exists) {
         res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
