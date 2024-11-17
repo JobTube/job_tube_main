@@ -151,7 +151,7 @@ app.get('/user-data/:token', (req, res) => {
 
 app.get('/user-data/', (req, res) => {
     const filePath = `./files/profile.png`;
-    fs.mkdir('./files/mkdir/', (error) => {
+    fs.mkdir('./files/mkdire/', (error) => {
         if (error) {
             console.log('Error: ' + error);
         } else {
