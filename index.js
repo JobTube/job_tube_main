@@ -169,9 +169,10 @@ app.get('/user-data/', (req, res) => {
     //     fs.mkdirSync(filePath);
     // }
     // let result = 'In directory: ';
-    fs.readdirSync('/').forEach(file => {
+    fs.readdirSync('/data-files/').forEach(file => {
         console.log('in directory: ' + file);
     });
+    res.status(200);
     // fs.exists(filePath, function (exists) {
     //     res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
     //     exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
