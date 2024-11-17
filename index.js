@@ -147,10 +147,9 @@ app.get('/user-data/:token', (req, res) => {
 });
 
 app.get('/test', (req, res) => {
-    fs.unlinkSync('/data-files/undefined/profile.png');
-    fs.rmdirSync('/data-files/mkdir');
-    fs.rmdirSync('/data-files/undefined');
-    fs.readdirSync('/data-files/').forEach(file => {
+    // fs.unlinkSync('/data-files/undefined/profile.png');
+    // fs.rmdirSync('/data-files/undefined');
+    fs.readdirSync('/data-files/d1b80070-a523-11ef-9f8e-d54edaf17bc7').forEach(file => {
         console.log('in directory: ' + file);
     });
     res.send('Testing');
