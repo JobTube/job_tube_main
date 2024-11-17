@@ -125,7 +125,12 @@ app.post('/user-confirm', async(req, res) => {
     try {
         await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`)
         .then(() => {
-            fs.mkdirSync(`files/${req.body.path}/`);
+            const filePath = `./files/${req.body.path}/`;
+            fs.mkdirSync(filePath);
+            const base64 = fs.readFileSync("./files/profile.png", "base64");
+            fs.mkdirSync(filePath);
+            const buffer = Buffer.from(base64, "base64");
+            fs.writeFileSync(`${filePath}/profile.png`, buffer);
             res.json({"name": "successful", "code": "0"});
         });
     } catch (err) {
@@ -150,6 +155,18 @@ app.get('/user-data/', (req, res) => {
         exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
     });
 });
+
+// app.get('/test/:path', (req, res) => {
+//     const base64 = fs.readFileSync("./files/profile.png", "base64");
+//     const filePath = `./files/${req.params.path}/`;
+//     fs.mkdirSync(filePath);
+//     const buffer = Buffer.from(base64, "base64");
+//     fs.writeFileSync(`${filePath}/profile.png`, buffer);
+//     fs.exists(filePath, function (exists) {
+//         res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
+//         exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
+//     });
+// });
 
 // app.get('/user-video', (req, res) => {
 //     const videoPath = './files/video.mp4';
