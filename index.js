@@ -164,9 +164,16 @@ app.get('/user-data/', (req, res) => {
     //         console.log("New Directory created successfully !!");
     //     }
     // });
-    // fs.readdirSync('./files/mkdire/').forEach(file => {
-    //     console.log('in directory: ' + file);
-    // });
+    const filePath = './data-files/mkdir/';
+    if (!fs.existsSync(filePath)){
+        fs.mkdirSync(filePath);
+    }
+    let result = 'In directory: <br>';
+    fs.readdirSync('./data-files/').forEach(file => {
+        // console.log('in directory: ' + file);
+        result += `---${file};<br>`;
+    });
+    res.send(result);
     // fs.exists(filePath, function (exists) {
     //     res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
     //     exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
