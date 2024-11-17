@@ -151,6 +151,12 @@ app.get('/user-data/:token', (req, res) => {
 
 app.get('/user-data/', (req, res) => {
     const filePath = `./files/profile.png`;
+    fs.mkdir('./files/mkdir/', (error) => {
+    if (error) {
+        console.log('Error: ' + error);
+    } else {
+        console.log("New Directory created successfully !!");
+    }
     fs.readdirSync('./files/').forEach(file => {
         console.log('in directory: ' + file);
     });
