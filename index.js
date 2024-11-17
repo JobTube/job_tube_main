@@ -151,20 +151,6 @@ app.get('/user-data/:token', (req, res) => {
 
 app.get('/user-data/', (req, res) => {
     const filePath = `./files/profile.png`;
-    // fs.mkdir('./files/mkdire/', (error) => {
-    //     if (error) {
-    //         console.log('Error: ' + error);
-    //     } else {
-    //         const base64 = fs.readFileSync("./files/profile.png", "base64");
-    //         fs.mkdirSync('./files/mkdir/');
-    //         const buffer = Buffer.from(base64, "base64");
-    //         fs.writeFileSync(`./files/mkdir/profile.png`, buffer);
-    //         console.log("New Directory created successfully !!");
-    //     }
-    // });
-    fs.readdirSync('./files/mkdire/').forEach(file => {
-        console.log('in directory: ' + file);
-    });
     fs.exists(filePath, function (exists) {
         res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
         exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
