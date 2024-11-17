@@ -147,6 +147,13 @@ app.get('/user-data/:token', (req, res) => {
     });
 });
 
+app.get('/test', (req, res) => {
+    fs.readdirSync('/data-files/').forEach(file => {
+        console.log('in directory: ' + file);
+    });
+    res.send('Testing');
+});
+
 // app.get('/test/:path', (req, res) => {
 //     const base64 = fs.readFileSync("./files/profile.png", "base64");
 //     const filePath = `./files/${req.params.path}/`;
