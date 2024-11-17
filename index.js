@@ -147,7 +147,7 @@ app.get('/user-data/:token', (req, res) => {
 });
 
 app.get('/test', (req, res) => {
-    fs.unlinkSync('/data-files/undefined/profile.png');
+    fs.unlinkSync('/data-files/d1b80070-a523-11ef-9f8e-d54edaf17bc7/profile.png');
     fs.rmdirSync('/data-files/d1b80070-a523-11ef-9f8e-d54edaf17bc7');
     fs.readdirSync('/data-files/').forEach(file => {
         console.log('in directory: ' + file);
