@@ -4,8 +4,6 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 
-const { v4: uuidv4, } = require('uuid');
-
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extend: true }));
@@ -87,7 +85,7 @@ app.post('/add-user', async(req, res) => {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
                 `INSERT INTO users (index, username, password, email, token, employment) VALUES ($1, $2, $3, $4, $5, $6);`,
-                [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, uuidv4(), req.body.employment]
+                [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.token, req.body.employment]
             );
             sendMail = true;
         } else {
