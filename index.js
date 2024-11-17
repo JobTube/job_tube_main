@@ -147,8 +147,8 @@ app.get('/user-data/:token', (req, res) => {
 });
 
 app.get('/test', (req, res) => {
-    fs.unlinkSync('/data-files/fdbea140-a520-11ef-ab2b-53e8595730d9/profile.png');
-    fs.rmdirSync('/data-files/fdbea140-a520-11ef-ab2b-53e8595730d9');
+    // fs.unlinkSync('/data-files/fdbea140-a520-11ef-ab2b-53e8595730d9/profile.png');
+    // fs.rmdirSync('/data-files/fdbea140-a520-11ef-ab2b-53e8595730d9');
     fs.readdirSync('/data-files/').forEach(file => {
         console.log('in directory: ' + file);
     });
