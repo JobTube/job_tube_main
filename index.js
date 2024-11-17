@@ -148,7 +148,7 @@ app.get('/user-data/:token', (req, res) => {
 });
 
 app.get('/test', (req, res) => {
-    fs.readdirSync('/data-files/').forEach(file => {
+    fs.readdirSync('/data-files/undefined/').forEach(file => {
         console.log('in directory: ' + file);
     });
     res.send('Testing');
