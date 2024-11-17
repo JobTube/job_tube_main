@@ -92,7 +92,7 @@ app.post('/add-user', async(req, res) => {
             sendMail = true;
         } else {
             if(
-                // check.rows[0].index == req.body.index
+                // check.rows[0].index == parseInt(req.body.index)
                 // && check.rows[0].username == req.body.username
                 // && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`)
                  !check.rows[0].confirm){
@@ -133,15 +133,55 @@ app.post('/user-confirm', async(req, res) => {
     }
 });
 
-// https://jobtube-1bqr.onrender.com/user-data/7303b5a7-a5b4-4b6d-82e3-0994d8ed571f
+// https://jobtube-1bqr.onrender.com/user-data/1b2a28fc-63c0-42a3-beab-db5ea6bdb008
 
 app.get('/user-data/:token', (req, res) => {
-    const filePath = `${__dirname}/files/${req.params.token}/profile.png`;
+    const filePath = `./files/${req.params.token}/profile.png`;
     fs.exists(filePath, function (exists) {
         res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
         exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
     });
 });
+
+app.get('/user-data/', (req, res) => {
+    const filePath = `./files/profile.png`;
+    fs.exists(filePath, function (exists) {
+        res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
+        exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
+    });
+});
+
+// app.get('/user-video', (req, res) => {
+//     const videoPath = './files/video.mp4';
+//     const stat = fs.statSync(videoPath);
+//     const fileSize = stat.size;
+//     const range = req.headers.range;
+  
+//     if (range) {
+//       const parts = range.replace(/bytes=/, '').split('-');
+//       const start = parseInt(parts[0], 10);
+//       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+//       const chunkSize = end - start + 1;
+//       const file = fs.createReadStream(videoPath, { start, end });
+//       const head = {
+//         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+//         'Accept-Ranges': 'bytes',
+//         'Content-Length': chunkSize,
+//         'Content-Type': 'video/mp4',
+//       };
+  
+//       res.writeHead(206, head);
+//       file.pipe(res);
+//     } else {
+//       const head = {
+//         'Content-Length': fileSize,
+//         'Content-Type': 'video/mp4',
+//       };
+  
+//       res.writeHead(200, head);
+//       fs.createReadStream(videoPath).pipe(res);
+//     }
+// });
 
 app.post('/add-profile/', upload_profile.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
 

@@ -7,5 +7,16 @@
     "nodemailer": "^6.9.16",
     "pg": "^8.13.1",
     "uuid": "^11.0.2"
-  }
+  },
+  "name": "jobtube",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
