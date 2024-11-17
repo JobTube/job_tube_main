@@ -164,10 +164,10 @@ app.get('/user-data/', (req, res) => {
     //         console.log("New Directory created successfully !!");
     //     }
     // });
-    // const filePath = '/data-files/mkdir/';
-    // if (!fs.existsSync(filePath)){
-    //     fs.mkdirSync(filePath);
-    // }
+    const filePath = '/data-files/mkdir/';
+    if (!fs.existsSync(filePath)){
+        fs.mkdirSync(filePath);
+    }
     // let result = 'In directory: ';
     fs.readdirSync('/data-files/').forEach(file => {
         console.log('in directory: ' + file);
