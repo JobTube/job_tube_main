@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
         if (!fs.existsSync(`/data-files/${req.body.path}/`)){
             fs.mkdirSync(`/data-files/${req.body.path}/`);
         }
-        cb(null, `files/${req.body.path}/`);
+        cb(null, `/data-files/${req.body.path}/`);
     },
     filename: (req, file, cb) => cb(null,  `profile.png`),
 });
