@@ -138,13 +138,14 @@ app.post('/user-confirm', async(req, res) => {
     }
 });
 
-// https://jobtube-1bqr.onrender.com/user-data/1b2a28fc-63c0-42a3-beab-db5ea6bdb008
+// https://jobtube-1bqr.onrender.com/user-data/4bc46e6f-a96a-43e7-a48e-c395e06ab54d
 
 app.get('/user-data/:token', (req, res) => {
     const filePath = `./files/${req.params.token}/profile.png`;
     fs.exists(filePath, function (exists) {
+        console.log(`path: `)
         res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
-        exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
+        exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end(`404 Not found token: ${req.params.token}`);
     });
 });
 
