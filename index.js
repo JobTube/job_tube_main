@@ -147,7 +147,7 @@ app.get('/user-data/:token', (req, res) => {
 });
 
 app.get('/test', (req, res) => {
-    // fs.unlinkSync('/data-files/fdbea140-a520-11ef-ab2b-53e8595730d9/profile.png');
+    fs.unlinkSync('/data-files/4cb96220-a527-11ef-9cf7-9b2e7df0d69b/undefined-admin');
     // fs.rmdirSync('/data-files/fdbea140-a520-11ef-ab2b-53e8595730d9');
     fs.readdirSync('/data-files/4cb96220-a527-11ef-9cf7-9b2e7df0d69b/').forEach(file => {
         console.log('in directory: ' + file);
@@ -168,7 +168,7 @@ app.get('/test', (req, res) => {
 // });
 
 app.get('/user-video/:token/:file', (req, res) => {
-    const videoPath = `/data-files/${req.params.token}/${req.params.file}`;
+    const videoPath = `/data-files/${req.params.token}/${req.params.file}.mp4`;
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
     const range = req.headers.range;
