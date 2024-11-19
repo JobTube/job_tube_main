@@ -160,7 +160,7 @@ app.get('/delete-files', (req, res) => {
 app.get('/read-files', (req, res) => {
     fs.readdirSync('/data-files/').forEach(folder => {
         console.log(`-- ${folder}`);
-        fs.readdirSync(folder).forEach(file=>{
+        fs.readdirSync(`/data-files/${folder}`).forEach(file=>{
             console.log(`-- -- ${file}`);
         });
     });
