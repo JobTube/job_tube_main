@@ -149,9 +149,11 @@ app.get('/user-data/:token', (req, res) => {
 
 app.get('/delete-files', (req, res) => {
     fs.readdirSync('/data-files/').forEach(folder => {
-        fs.readdirSync(folder).forEach(file=>{
-            fs.unlinkSync(`/data-files/${folder}/${file}`);
-        });
+        if(fs.readdirSync(`/data-files/${folder}/`).length){
+            fs.readdirSync(`/data-files/${folder}/`).forEach(file=>{
+                fs.unlinkSync(`/data-files/${folder}/${file}`);
+            });
+        }
         fs.rmdirSync(`/data-files/${folder}`);
     });
     res.send('Deleted');
