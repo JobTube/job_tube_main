@@ -85,8 +85,8 @@ app.post('/add-user', async(req, res) => {
         if (!check.rows.length) {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
-                `INSERT INTO users (index, username, password, email, token, employment) VALUES ($1, $2, $3, $4, $5, $6);`,
-                [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.token, req.body.employment]
+                `INSERT INTO users (index, username, password, email, token, employment, permission) VALUES ($1, $2, $3, $4, $5, $6);`,
+                [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.token, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
             );
             sendMail = true;
         } else {
