@@ -7,8 +7,8 @@ const storage = multer.diskStorage({
         try {
             if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
             await pool.query(
-                `INSERT INTO videos (employment, description, user_id) VALUES ($1, $2, $3);`,
-                [req.body.employment, req.body.description, req.body.user]
+                `INSERT INTO videos (employment, index, description, user_id) VALUES ($1, $2, $3, $4);`,
+                [req.body.employment, req.body.index, req.body.description, req.body.user]
             ).then(() => cb(null, `/data-files/${req.body.path}/`));
         } catch (err) {
             console.error(err);
