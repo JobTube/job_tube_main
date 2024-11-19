@@ -3,6 +3,7 @@ const fs = require('fs');
 const http = require('http');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
@@ -146,15 +147,24 @@ app.get('/user-data/:token', (req, res) => {
     });
 });
 
-app.get('/test', (req, res) => {
-    // fs.unlinkSync('/data-files/4cb96220-a527-11ef-9cf7-9b2e7df0d69b/18-admin.mp4');
-    // fs.unlinkSync('/data-files/4cb96220-a527-11ef-9cf7-9b2e7df0d69b/17-test.mp4');
-    // fs.unlinkSync('/data-files/4cb96220-a527-11ef-9cf7-9b2e7df0d69b/profile.png');
-    // fs.rmdirSync('/data-files/fdbea140-a520-11ef-ab2b-53e8595730d9');
-    fs.readdirSync('/data-files/4cb96220-a527-11ef-9cf7-9b2e7df0d69b/').forEach(file => {
-        console.log('in directory: ' + file);
+app.get('/delete-files', (req, res) => {
+    fs.readdirSync('/data-files/').forEach(folder => {
+        fs.readdirSync(folder).forEach(file=>{
+            fs.unlinkSync(`/data-files/${folder}/${file}`);
+        });
+        fs.rmdirSync(`/data-files/${folder}`);
     });
-    res.send('Testing');
+    res.send('Deleted');
+});
+
+app.get('/read-files', (req, res) => {
+    fs.readdirSync('/data-files/').forEach(folder => {
+        console.log(`-- ${folder}`);
+        fs.readdirSync(folder).forEach(file=>{
+            console.log(`-- -- ${file}`);
+        });
+    });
+    res.send('Readed');
 });
 
 // app.get('/test/:path', (req, res) => {
