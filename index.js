@@ -27,7 +27,7 @@ app.get('/data/:token?', async (req, res) => {
         if(user == "Guest"){
             data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "followers": [], "following": []}`);
         }else{
-            await pool.query(`SELECT id, index, username, email, token, employment, followers, following FROM users WHERE token='${req.params.token}'`)
+            await pool.query(`SELECT id, index, username, email, token, employment, permission, followers, following FROM users WHERE token='${req.params.token}'`)
             .then(users =>{
                 if(users.rows.length) data.user = users.rows[0];
             });
