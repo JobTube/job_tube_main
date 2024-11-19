@@ -169,18 +169,6 @@ app.get('/read-files', (req, res) => {
     res.send('Readed');
 });
 
-// app.get('/test/:path', (req, res) => {
-//     const base64 = fs.readFileSync("./files/profile.png", "base64");
-//     const filePath = `./files/${req.params.path}/`;
-//     fs.mkdirSync(filePath);
-//     const buffer = Buffer.from(base64, "base64");
-//     fs.writeFileSync(`${filePath}/profile.png`, buffer);
-//     fs.exists(filePath, function (exists) {
-//         res.writeHead(exists ? 200 : 404, {"Content-Type": exists ? "image/png" : "text/plain"});
-//         exists ? fs.readFile(filePath,(err, content) => res.end(content)) : res.end("404 Not Found");
-//     });
-// });
-
 app.get('/user-video/:token/:file', (req, res) => {
     const videoPath = `/data-files/${req.params.token}/${req.params.file}.mp4`;
     const stat = fs.statSync(videoPath);
