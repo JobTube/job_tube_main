@@ -38,17 +38,25 @@ app.get('/data/:token?', async (req, res) => {
                 }
             });
 
-            await pool.query(`SELECT user.id, users.username, follow.follower_id as follower FROM follow INNER JOIN user ON follow.user_id = user.id AND user.token ='${req.params.token}'`)
+            await pool.query(`SELECT users.id, users.username, follow.follower_id as follower  
+                FROM follow INNER JOIN users ON follow.user_id = users.id
+                WHERE users.token ='${req.params.token}'`)
             .then(followers =>{
                 data.followers = followers.rows;
             });
 
-            await pool.query(`SELECT user.id, users.username, follow.user_id as following FROM follow INNER JOIN user ON follow.follower_id = user.id AND user.token ='${req.params.token}'`)
+            await pool.query(`SELECT  users.id, users.username, follow.user_id as following 
+                FROM follow INNER JOIN users ON follow.follower_id = users.id
+                WHERE users.token ='${req.params.token}'`)
             .then(followings =>{
                 data.followings = followings.rows;
             });
-            
-            await pool.query(`SELECT videos.id, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.is_active COUNT(likes.id) FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON video.id = likes.video_id AND users.token='${req.params.token}'`)
+
+            await pool.query(`SELECT videos.id, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.is_active, COUNT(likes.id) as likes 
+                FROM videos INNER JOIN users ON videos.user_id = users.id 
+                INNER JOIN likes ON videos.id = likes.video_id
+                WHERE users.token = '${req.params.token}'
+                GROUP BY videos.id, users.id`)
             .then(videos =>{
                 data.videos = videos.rows;
             });
