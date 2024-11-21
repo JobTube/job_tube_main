@@ -18,6 +18,7 @@ const sendConfirmationCode = require('./send_confirmation_code');
 const generateMd5 = require('./generate_code');
 const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
+const upload_resume = require('./upload_resume');
 
 app.get('/data/:token?', async (req, res) => {
     try {
@@ -25,25 +26,38 @@ app.get('/data/:token?', async (req, res) => {
         const user = req.params.token || "Guest";
 
         if(user == "Guest"){
-            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, resume: false, "followers": [], "following": []}`);
+            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "resume": false, "followers": [], "following": []}`);
+            data.videos = JSON.parse(`[]`);
+            data.followes = JSON.parse(`[]`);
+            data.followings = JSON.parse(`[]`);
         }else{
-            await pool.query(`SELECT id, index, username, email, token, employment, permission, resume, followers, following FROM users WHERE token='${req.params.token}'`)
+            await pool.query(`SELECT id, index, username, email, token, employment, permission, resume FROM users WHERE token='${req.params.token}'`)
             .then(users =>{
-                if(users.rows.length) data.user = users.rows[0];
+                if(users.rows.length){
+                    data.user = users.rows[0];
+                }
+            });
+
+            await pool.query(`SELECT user.id, users.username, follow.follower_id as follower FROM follow INNER JOIN user ON follow.user_id = user.id AND user.token ='${req.params.token}'`)
+            .then(followers =>{
+                data.followers = followers.rows;
+            });
+
+            await pool.query(`SELECT user.id, users.username, follow.user_id as following FROM follow INNER JOIN user ON follow.follower_id = user.id AND user.token ='${req.params.token}'`)
+            .then(followings =>{
+                data.followings = followings.rows;
             });
             
+            await pool.query(`SELECT videos.id, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.is_active COUNT(likes.id) FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON video.id = likes.video_id AND users.token='${req.params.token}'`)
+            .then(videos =>{
+                data.videos = videos.rows;
+            });
         }
+
 
         await pool.query(`SELECT id, index, number, code, '[]'::json as children FROM job_categories WHERE index = 1 ORDER BY number ASC`)
         .then(categories =>{
             data.categories = categories.rows;
-        });
-
-        await pool.query(`SELECT id, index, number, code, '[]'::json as children FROM job_categories WHERE index = 2 ORDER BY number ASC`)
-        .then(subcategories =>{
-            subcategories.rows.forEach(row=>{
-                data.categories[Math.floor(row.number)-1].children.push(row);
-            });
         });
         
         await pool.query(`SELECT * FROM countries ORDER BY code ASC`)
@@ -51,24 +65,24 @@ app.get('/data/:token?', async (req, res) => {
             data.countries = countries.rows;
         });
         
-        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
-        .then(job_seekers=>{
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 0 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        .then(job_seekers =>{
             data.job_seekers = job_seekers.rows;
         });
-    
-        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
-        .then(offers=>{
-            data.offers = offers.rows;
+
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 1 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        .then(vacancies =>{
+            data.vacancies = vacancies.rows;
         });
-    
-        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
-        .then(freelancers=>{
+
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 2 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        .then(freelancers =>{
             data.freelancers = freelancers.rows;
         });
-    
-        await pool.query(`SELECT * FROM job_records ORDER BY id DESC LIMIT 10`)
-        .then(talents=>{
-            data.talents = talents.rows;
+
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 3 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        .then(job_seekers =>{
+            data.job_seekers = job_seekers.rows;
         });
 
         res.json(data);
@@ -204,6 +218,8 @@ app.get('/user-video/:token/:file', (req, res) => {
 app.post('/add-profile/', upload_profile.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
 
 app.post('/video-record/', upload_record.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
+
+app.post('/add-resume/', upload_resume.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
 
 app.get('/admin', (req, res) => {
     res.render(
