@@ -105,8 +105,8 @@ app.get('/data/:token?', async (req, res) => {
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE
             GROUP BY videos.id, users.id`)
-        .then(job_seekers =>{
-            data.job_seekers = job_seekers.rows;
+        .then(talents =>{
+            data.talents = talents.rows;
         });
 
         res.json(data);
