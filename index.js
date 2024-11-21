@@ -52,11 +52,10 @@ app.get('/data/:token?', async (req, res) => {
                 data.followings = followings.rows;
             });
 
-            await pool.query(`SELECT videos.id, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.is_active, COUNT(likes.id) as likes 
-                FROM videos INNER JOIN users ON videos.user_id = users.id 
-                INNER JOIN likes ON videos.id = likes.video_id
-                WHERE users.token = '${req.params.token}'
-                GROUP BY videos.id, users.id`)
+            await pool.query(`SELECT videos.id, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.is_active, videos.confirm,
+                (SELECT COUNT(id) FROM likes WHERE video_id = videos.id ) as likes 
+                FROM videos INNER JOIN users ON videos.user_id = users.id
+                WHERE users.token = '${req.params.token}'`)
             .then(videos =>{
                 data.videos = videos.rows;
             });
@@ -73,46 +72,42 @@ app.get('/data/:token?', async (req, res) => {
             data.countries = countries.rows;
         });
         
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.user_id
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.employment as name, users.token, videos.types, 
+            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id ) as likes 
             FROM videos INNER JOIN users ON videos.user_id = users.id
-            INNER JOIN likes ON videos.id = likes.video_id
             WHERE videos.index = 0
             AND videos.is_active=TRUE 
-            AND videos.confirm=TRUE
-            GROUP BY videos.id, users.id`)
+            AND videos.confirm=TRUE`)
         .then(job_seekers =>{
             data.job_seekers = job_seekers.rows;
         });
 
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.description, videos.publish_date, videos.end_date, videos.types, videos.index, videos.employment as name, videos.user_id
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.employment as name, users.token, videos.description, videos.publish_date, videos.end_date, videos.types, 
+            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id ) as likes
             FROM videos INNER JOIN users ON videos.user_id = users.id
-            INNER JOIN likes ON videos.id = likes.video_id
             WHERE videos.index = 1
             AND videos.is_active=TRUE 
-            AND videos.confirm=TRUE
-            GROUP BY videos.id, users.id`)
+            AND videos.confirm=TRUE`)
         .then(vacancies =>{
             data.vacancies = vacancies.rows;
         });
 
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.user_id
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.employment as name, users.token, videos.types,
+            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id ) as likes
             FROM videos INNER JOIN users ON videos.user_id = users.id
-            INNER JOIN likes ON videos.id = likes.video_id
             WHERE videos.index = 2
             AND videos.is_active=TRUE 
-            AND videos.confirm=TRUE
-            GROUP BY videos.id, users.id`)
+            AND videos.confirm=TRUE`)
         .then(freelancers =>{
             data.freelancers = freelancers.rows;
         });
 
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.user_id
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.employment as name, users.token, videos.types,
+            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id ) as likes
             FROM videos INNER JOIN users ON videos.user_id = users.id
-            INNER JOIN likes ON videos.id = likes.video_id
             WHERE videos.index = 3
             AND videos.is_active=TRUE 
-            AND videos.confirm=TRUE
-            GROUP BY videos.id, users.id`)
+            AND videos.confirm=TRUE`)
         .then(talents =>{
             data.talents = talents.rows;
         });
