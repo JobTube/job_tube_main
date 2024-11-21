@@ -177,8 +177,6 @@ app.post('/user-confirm', async(req, res) => {
     }
 });
 
-// https://jobtube-1bqr.onrender.com/user-data/4bc46e6f-a96a-43e7-a48e-c395e06ab54d
-
 app.get('/user-data/:token', (req, res) => {
     const filePath = `/data-files/${req.params.token}/profile.png`;
     fs.exists(filePath, function (exists) {
@@ -208,6 +206,16 @@ app.get('/read-files', (req, res) => {
         });
     });
     res.send('Readed');
+});
+
+app.get('/user-resume/:token', (req, res) => {
+    fs.readFile(`/data-files/${req.params.token}/resume.pdf`, (err, data) => {
+    res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "inline; filename=resume.pdf",
+    });
+    res.send(data);
+    });
 });
 
 app.get('/user-video/:token/:file', (req, res) => {
