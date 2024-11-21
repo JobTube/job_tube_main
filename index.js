@@ -65,22 +65,46 @@ app.get('/data/:token?', async (req, res) => {
             data.countries = countries.rows;
         });
         
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 0 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.user_id
+            FROM videos INNER JOIN users ON videos.user_id = users.id
+            INNER JOIN likes ON videos.id = likes.video_id
+            WHERE videos.index = 0
+            AND videos.is_active=TRUE 
+            AND videos.confirm=TRUE
+            GROUP BY videos.id, users.id`)
         .then(job_seekers =>{
             data.job_seekers = job_seekers.rows;
         });
 
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 1 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.description, videos.publish_date, videos.end_date, videos.types, videos.index, videos.employment as name, videos.user_id
+            FROM videos INNER JOIN users ON videos.user_id = users.id
+            INNER JOIN likes ON videos.id = likes.video_id
+            WHERE videos.index = 1
+            AND videos.is_active=TRUE 
+            AND videos.confirm=TRUE
+            GROUP BY videos.id, users.id`)
         .then(vacancies =>{
             data.vacancies = vacancies.rows;
         });
 
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 2 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.user_id
+            FROM videos INNER JOIN users ON videos.user_id = users.id
+            INNER JOIN likes ON videos.id = likes.video_id
+            WHERE videos.index = 2
+            AND videos.is_active=TRUE 
+            AND videos.confirm=TRUE
+            GROUP BY videos.id, users.id`)
         .then(freelancers =>{
             data.freelancers = freelancers.rows;
         });
 
-        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.likes, videos.user_id FROM videos INNER JOIN users ON videos.user_id = users.id INNER JOIN likes ON users.id = likes.user_id AND videos.index = 3 AND videos.is_active=TRUE videos.confirm=TRUE`)
+        await pool.query(`SELECT videos.id, users.username, users.email, users.employment, users.token, COUNT(likes.id) as likes, videos.types, videos.index, videos.employment as name, videos.user_id
+            FROM videos INNER JOIN users ON videos.user_id = users.id
+            INNER JOIN likes ON videos.id = likes.video_id
+            WHERE videos.index = 3
+            AND videos.is_active=TRUE 
+            AND videos.confirm=TRUE
+            GROUP BY videos.id, users.id`)
         .then(job_seekers =>{
             data.job_seekers = job_seekers.rows;
         });
