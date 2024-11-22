@@ -257,6 +257,29 @@ app.get('/user-video/:token/:file', (req, res) => {
     }
 });
 
+app.post('/video-trash', async(req, res) => {
+    try {
+        await pool.query(`DELETE FROM videos WHERE id = $1'`, [req.body.id])
+        .then(() => {
+            fs.unlinkSync(`/data-files/${req.body.path}/${req.body.name}.mp4`);
+            res.json({"name": "successful", "code": "0"});
+        });
+    } catch (err) {
+        res.json(err);
+    }
+});
+
+app.post('/video-edit', async(req, res) => {
+    try {
+        await pool.query(`UPDATE videos SET is_active = ${req.body.active == 1 ? 'TRUE' : 'FALSE'} WHERE id='${req.body.id}';`)
+        .then(() => {
+            res.json({"name": "successful", "code": "0"});
+        });
+    } catch (err) {
+        res.json(err);
+    }
+});
+
 app.post('/video-record/', upload_record.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
 
 app.post('/add-profile/', upload_profile.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
