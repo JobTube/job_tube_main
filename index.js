@@ -52,7 +52,7 @@ app.get('/data/:token?', async (req, res) => {
                 data.followings = followings.rows;
             });
 
-            await pool.query(`SELECT videos.id, videos.employment as name, videos.description, videos.publish_date, videos.end_date, videos.is_active, videos.confirm,
+            await pool.query(`SELECT videos.id, videos.employment as name, videos.types, videos.publish_date, videos.end_date, videos.description, videos.is_active, videos.confirm,
                 (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes 
                 FROM videos INNER JOIN users ON videos.user_id = users.id
                 WHERE users.token = '${req.params.token}'`)
