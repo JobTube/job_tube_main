@@ -161,7 +161,7 @@ app.post('/user-login', async(req, res) => {
         if (check.rows.length) {
             res.json({"name": "successful", "code": check.rows[0].token});
         } else {
-            res.json({"name": "inaccessible"});
+            res.json({"name": "inaccessible", "code": "3"});
         }
     }catch (err) {
         res.json(err);
