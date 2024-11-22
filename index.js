@@ -66,6 +66,13 @@ app.get('/data/:token?', async (req, res) => {
         .then(categories =>{
             data.categories = categories.rows;
         });
+
+        await pool.query(`SELECT id, index, number, code, '[]'::json as children FROM job_categories WHERE index = 2 ORDER BY number ASC`)
+        .then(subcategories =>{
+            subcategories.rows.forEach(row=>{
+                data.categories[Math.floor(row.number)-1].children.push(row);
+            });
+        });
         
         await pool.query(`SELECT * FROM countries ORDER BY code ASC`)
         .then(countries=>{
