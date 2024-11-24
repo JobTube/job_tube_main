@@ -23,9 +23,9 @@ const upload_resume = require('./upload_resume');
 app.get('/data/:token?', async (req, res) => {
     try {
         var data = JSON.parse('{}');
-        const user = req.params.token || "Guest";
+        // const user = req.params.token || "Guest";
 
-        if(user == "Guest"){
+        if(req.params.token == "Guest"){
             data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "resume": false, "followers": [], "following": []}`);
             data.videos = JSON.parse(`[]`);
             data.followers = JSON.parse(`[]`);
