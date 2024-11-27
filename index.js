@@ -62,7 +62,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         var data = JSON.parse('{}');
 
         if(req.params.token == "Guest"){
-            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "resume": false, "followers": [], "following": []}`);
+            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "resume": false}`);
             data.videos = JSON.parse(`[]`);
             data.followers = JSON.parse(`[]`);
             data.followings = JSON.parse(`[]`);
@@ -73,6 +73,14 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 if(users.rows.length){
                     data.user = users.rows[0];
                 }
+            });
+
+            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, videos.is_active, videos.confirm,
+                (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes 
+                FROM videos INNER JOIN users ON videos.user_id = users.id
+                WHERE users.token = '${req.params.token}'`)
+            .then(videos =>{
+                data.videos = videos.rows;
             });
 
             await pool.query(`SELECT users.id, users.username, follows.follower_id as follower  
@@ -89,19 +97,11 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.followings = followings.rows;
             });
 
-            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, videos.is_active, videos.confirm,
-                (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes 
-                FROM videos INNER JOIN users ON videos.user_id = users.id
-                WHERE users.token = '${req.params.token}'`)
-            .then(videos =>{
-                data.videos = videos.rows;
-            });
-
-            await pool.query(`SELECT likes.id, likes.video_id as video
+            await pool.query(`SELECT likes.id, likes.video_id as video 
                 FROM likes INNER JOIN users ON likes.user_id = users.id
-                WHERE users.token = '${req.params.token}'`)
-            .then(videos =>{
-                data.videos = videos.rows;
+                WHERE users.token ='${req.params.token}'`)
+            .then(likes =>{
+                data.likes = likes.rows;
             });
         }
 
