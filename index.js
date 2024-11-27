@@ -20,24 +20,15 @@ const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
-app.get('/example/:numbers?', (req, res) => {
-    const numbers = req.params.numbers || '';
-    const arr = numbers.split(',');
-  
-    console.log(arr); // Output: ['1', '2', '3', '4']
-  
-    res.send('Received numbers: ' + arr);
-  });
-
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
         const counties = req.params.counties || '';
-        const types_arr = types.split(',');
-        
-        const types = req.params.types || '';
         const counties_arr = counties.split(',');
         
-        const search = eq.params.search || '';
+        const types = req.params.types || '';
+        const types_arr = types.split(',');
+        
+        const search = req.params.search || '';
 
         let search_query = '';
         let search_arr_query = 'ORDER BY CASE WHEN users.premium = TRUE THEN 0 ';
@@ -54,13 +45,15 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 
             let country_query = ' videos.countries && ARRAY['
             counties_arr.forEach(country => {
-                country_query += `'${contry}',`
+                country_query += `'${country}',`
             });
             country_query = `${country_query.substring(0, country_query.length-1)}] THEN 1 ELSE 2 END ASC`;
             search_arr_query += country_query;
         }else{
             search_arr_query += 'ELSE 1 END ASC';
         }
+
+        search_arr_query += ', likes DESC'
 
         if(search.length){
             search_query = ` AND users.usernamme = '${search}' `;
@@ -96,7 +89,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.followings = followings.rows;
             });
 
-            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.country, videos.types, videos.is_active, videos.confirm,
+            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, videos.is_active, videos.confirm,
                 (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes 
                 FROM videos INNER JOIN users ON videos.user_id = users.id
                 WHERE users.token = '${req.params.token}'`)
@@ -130,7 +123,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.countries = countries.rows;
         });
         
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.country, videos.types, 
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes 
             FROM videos INNER JOIN users ON videos.user_id = users.id
             WHERE videos.index = 0
@@ -142,7 +135,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.job_seekers = job_seekers.rows;
         });
 
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.country, videos.types, 
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes
             FROM videos INNER JOIN users ON videos.user_id = users.id
             WHERE videos.index = 1
@@ -154,7 +147,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.vacancies = vacancies.rows;
         });
 
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.country, videos.types,
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types,
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes
             FROM videos INNER JOIN users ON videos.user_id = users.id
             WHERE videos.index = 2
@@ -166,7 +159,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.freelancers = freelancers.rows;
         });
 
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.country, videos.types,
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types,
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes
             FROM videos INNER JOIN users ON videos.user_id = users.id
             WHERE videos.index = 3
