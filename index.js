@@ -62,13 +62,13 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         var data = JSON.parse('{}');
 
         if(req.params.token == "Guest"){
-            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "resume": false}`);
+            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "premium": false, "resume": false}`);
             data.videos = JSON.parse(`[]`);
             data.followers = JSON.parse(`[]`);
             data.followings = JSON.parse(`[]`);
             data.likes = JSON.parse(`[]`);
         }else{
-            await pool.query(`SELECT id, index, username, email, token, employment, permission, resume FROM users WHERE token='${req.params.token}'`)
+            await pool.query(`SELECT id, index, username, email, token, employment, permission, premium, resume FROM users WHERE token='${req.params.token}'`)
             .then(users =>{
                 if(users.rows.length){
                     data.user = users.rows[0];
@@ -254,11 +254,6 @@ app.get('/delete-files', (req, res) => {
         }
         fs.rmdirSync(`/data-files/${folder}`);
     });
-    res.send('Deleted');
-});
-
-app.get('/ex', (req, res) => {
-    fs.unlinkSync(`/data-files/da212260-acd9-11ef-90e5-a7a07c5ae916/1undefined.mp4`);
     res.send('Deleted');
 });
 
