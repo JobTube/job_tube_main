@@ -424,7 +424,7 @@ app.get('/admin', (req, res) => {
     )
 });
 
-app.get('/test', (res, req){
+app.get('/test', (res, req) => {
     fs.unlinkSync(`/data-files/da212260-acd9-11ef-90e5-a7a07c5ae916/ed166a0a-aa48-4a05-9615-cdb5bda04b02.mp4`);
     res.send('Deleted');
 });
