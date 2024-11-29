@@ -81,7 +81,6 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
                 (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views
                 FROM videos INNER JOIN users ON videos.user_id = users.id 
-                INNER JOIN views ON views.video_id = videos.id 
                 WHERE users.token = '${req.params.token}'`)
             .then(videos =>{
                 data.videos = videos.rows;
