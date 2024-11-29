@@ -325,7 +325,7 @@ app.get('/user-video/:token/:file', (req, res) => {
 
 app.post('/video-trash', async(req, res) => {
     try {
-        await pool.query(`DELETE FROM videos WHERE id = $1'`, [req.body.id])
+        await pool.query(`DELETE FROM videos WHERE id = ${req.body.id}'`)
         .then(() => {
             fs.unlinkSync(`/data-files/${req.body.path}/${req.body.name}.mp4`);
             res.json({"name": "successful", "code": "0"});
