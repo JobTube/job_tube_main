@@ -325,7 +325,7 @@ app.get('/user-video/:token/:file', (req, res) => {
 
 app.post('/video-trash', async(req, res) => {
     try {
-        await pool.query(`DELETE FROM videos WHERE id = ${req.body.id}'`)
+        await pool.query(`DELETE FROM videos WHERE id = $1`, [req.body.id])
         .then(() => {
             fs.unlinkSync(`/data-files/${req.body.path}/${req.body.name}.mp4`);
             res.json({"name": "successful", "code": "0"});
@@ -361,7 +361,7 @@ app.post('/user-follow', async(req, res) => {
 
 app.post('/user-unfollow', async(req, res) => {
     try {
-        await pool.query(`DELETE FROM follows WHERE follower_id = $1 AND user_id = $2'`,
+        await pool.query(`DELETE FROM follows WHERE follower_id = $1 AND user_id = $2`,
             [req.body.follower, req.body.user,]
         ).then(() => {
             res.json({"name": "successful", "code": "0"});
@@ -399,7 +399,7 @@ app.post('/video-like', async(req, res) => {
 
 app.post('/video-dislike', async(req, res) => {
     try {
-        await pool.query(`DELETE FROM likes WHERE video_id = $1 AND user_id = $2'`,
+        await pool.query(`DELETE FROM likes WHERE video_id = $1 AND user_id = $2`,
             [req.body.video, req.body.user,]
         ).then(() => {
             res.json({"name": "successful", "code": "0"});
@@ -422,11 +422,6 @@ app.get('/admin', (req, res) => {
 
         }
     )
-});
-
-app.get('/test', (res, req) => {
-    fs.unlinkSync(`/data-files/da212260-acd9-11ef-90e5-a7a07c5ae916/ed166a0a-aa48-4a05-9615-cdb5bda04b02.mp4`);
-    res.send('Deleted');
 });
 
 app.listen(3000);
