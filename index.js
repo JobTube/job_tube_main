@@ -257,6 +257,11 @@ app.get('/delete-files', (req, res) => {
     res.send('Deleted');
 });
 
+app.get('/ex', (req, res) => {
+    fs.unlinkSync(`/data-files/da212260-acd9-11ef-90e5-a7a07c5ae916/1undefined.mp4`);
+    res.send('Deleted');
+});
+
 app.get('/read-files', (req, res) => {
     fs.readdirSync('/data-files/').forEach(folder => {
         console.log(`-- ${folder}`);
