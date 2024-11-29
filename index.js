@@ -31,7 +31,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         const search = req.params.search || '';
 
         let search_query = '';
-        let search_arr_query = 'ORDER BY CASE WHEN users.premium = TRUE THEN 0 ';
+        let search_arr_query = ' ORDER BY CASE WHEN users.premium = TRUE THEN 0 ';
         
         if(types_arr.length && counties_arr.length){
             search_arr_query += ' WHEN ';
@@ -56,7 +56,8 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         search_arr_query += ', likes DESC'
 
         if(search.length){
-            search_query = ` AND users.usernamme = '${search}' `;
+            search_query = ` AND (users.username LIKE '%${search}%' OR 
+            videos.types @> (SELECT ARRAY[code] FROM job_categories WHERE EXISTS (SELECT 1 FROM UNNEST(titles) AS title WHERE title LIKE '%perati%'))::TEXT[]) `;
         }
 
         var data = JSON.parse('{}');
@@ -137,8 +138,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
-            INNER JOIN views ON views.video_id = videos.id 
-            WHERE videos.index = 0
+            WHERE videos.index = 0 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
@@ -151,8 +151,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
-            INNER JOIN views ON views.video_id = videos.id 
-            WHERE videos.index = 1
+            WHERE videos.index = 1 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
@@ -165,8 +164,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
-            INNER JOIN views ON views.video_id = videos.id 
-            WHERE videos.index = 2
+            WHERE videos.index = 2 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
@@ -179,8 +177,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
-            INNER JOIN views ON views.video_id = videos.id 
-            WHERE videos.index = 3
+            WHERE videos.index = 3 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
