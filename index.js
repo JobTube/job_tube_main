@@ -239,11 +239,11 @@ app.post('/user-confirm', async(req, res) => {
         await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`)
         .then(() => {
             const filePath = `/data-files/${req.body.path}/`;
-            const base64 = fs.readFileSync("./files/default_user_profile_image.png", "base64");
-            const buffer = Buffer.from(base64, "base64");
+            // const base64 = fs.readFileSync("./files/default_user_profile_image.png", "base64");
+            // const buffer = Buffer.from(base64, "base64");
             fs.mkdirSync(filePath);
-            fs.writeFileSync(`/data-files/${req.body.path}/profile.png`, buffer);
-            res.json({"name": "successful", "code": "0"});
+            // fs.writeFileSync(`/data-files/${req.body.path}/profile.png`, buffer);
+            // res.json({"name": "successful", "code": "0"});
         });
     } catch (err) {
         res.json(err);
@@ -422,6 +422,11 @@ app.get('/admin', (req, res) => {
 
         }
     )
+});
+
+app.get('/tested', (req, res) => {
+    fs.unlinkSync(`/data-files/da212260-acd9-11ef-90e5-a7a07c5ae916/profile.png`);
+    res.send('Deleted');
 });
 
 app.listen(3000);
