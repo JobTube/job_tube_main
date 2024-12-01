@@ -87,14 +87,14 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             });
 
             await pool.query(`SELECT users.id, users.username, follows.follower_id as follow, users.index  
-                FROM follows INNER JOIN users ON follows.user_id = users.id
+                FROM follows INNER JOIN users ON follows.follower_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followers =>{
                 data.followers = followers.rows;
             });
 
             await pool.query(`SELECT  users.id, users.username, follows.user_id as follow, users.index  
-                FROM follows INNER JOIN users ON follows.follower_id = users.id
+                FROM follows INNER JOIN users ON follows.user_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followings =>{
                 data.followings = followings.rows;
