@@ -86,14 +86,14 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.videos = videos.rows;
             });
 
-            await pool.query(`SELECT users.id, users.username, follows.follower_id as follower, users.index  
+            await pool.query(`SELECT users.id, users.username, follows.follower_id as follow, users.index  
                 FROM follows INNER JOIN users ON follows.user_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followers =>{
                 data.followers = followers.rows;
             });
 
-            await pool.query(`SELECT  users.id, users.username, follows.user_id as following, users.index  
+            await pool.query(`SELECT  users.id, users.username, follows.user_id as follow, users.index  
                 FROM follows INNER JOIN users ON follows.follower_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followings =>{
@@ -238,12 +238,12 @@ app.post('/user-confirm', async(req, res) => {
     try {
         await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`)
         .then(() => {
-            const filePath = `/data-files/${req.body.path}/`;
+            // const filePath = `/data-files/${req.body.path}/`;
             // const base64 = fs.readFileSync("./files/default_user_profile_image.png", "base64");
             // const buffer = Buffer.from(base64, "base64");
-            fs.mkdirSync(filePath);
+            fs.mkdirSync(`/data-files/${req.body.path}/`);
             // fs.writeFileSync(`/data-files/${req.body.path}/profile.png`, buffer);
-            // res.json({"name": "successful", "code": "0"});
+            res.json({"name": "successful", "code": "0"});
         });
     } catch (err) {
         res.json(err);
@@ -422,11 +422,6 @@ app.get('/admin', (req, res) => {
 
         }
     )
-});
-
-app.get('/tested', (req, res) => {
-    fs.unlinkSync(`/data-files/da212260-acd9-11ef-90e5-a7a07c5ae916/profile.png`);
-    res.send('Deleted');
 });
 
 app.listen(3000);
