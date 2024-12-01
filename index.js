@@ -78,8 +78,8 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             });
 
             await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, videos.is_active, videos.confirm,
-                (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-                (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views
+                ARRAY[(SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int] as likes,
+                ARRAY[(SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int] as views 
                 FROM videos INNER JOIN users ON videos.user_id = users.id 
                 WHERE users.token = '${req.params.token}'`)
             .then(videos =>{
@@ -134,8 +134,8 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         });
         
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types, 
-            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            ARRAY[(SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int] as likes,
+            ARRAY[(SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int] as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 0 
             AND videos.is_active=TRUE 
@@ -147,8 +147,8 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         });
 
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, 
-            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            ARRAY[(SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int] as likes,
+            ARRAY[(SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int] as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 1 
             AND videos.is_active=TRUE 
@@ -160,8 +160,8 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         });
 
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types,
-            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            ARRAY[(SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int] as likes,
+            ARRAY[(SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int] as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 2 
             AND videos.is_active=TRUE 
@@ -173,8 +173,8 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         });
 
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types,
-            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            ARRAY[(SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int] as likes,
+            ARRAY[(SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int] as views 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 3 
             AND videos.is_active=TRUE 
