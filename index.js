@@ -55,7 +55,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
         search_arr_query += ', likes DESC'
 
-        if(search.length){
+        if(search.trim() != ''){
             search_query = ` AND (users.username LIKE '%${search}%' OR 
             videos.types @> (SELECT ARRAY[code] FROM job_categories WHERE EXISTS (SELECT 1 FROM UNNEST(titles) AS title WHERE title LIKE '%perati%'))::TEXT[]) `;
         }
