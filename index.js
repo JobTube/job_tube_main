@@ -22,10 +22,10 @@ const upload_resume = require('./upload_resume');
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
-        const counties = req.params.counties || '';
+        const counties = req.params.counties || '_';
         const counties_arr = counties.split(',');
         
-        const types = req.params.types || '';
+        const types = req.params.types || '_';
         const types_arr = types.split(',');
         
         const search = req.params.search || '';
@@ -47,17 +47,17 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             counties_arr.forEach(country => {
                 country_query += `'${country}',`
             });
-            country_query = `${country_query.substring(0, country_query.length-1)}] THEN 1 ELSE 2 END ASC`;
+            country_query = `${country_query.substring(0, country_query.length-1)}] OR videos.user_id = follows.user_id THEN 1 ELSE 2 END ASC`;
             search_arr_query += country_query;
         }else{
-            search_arr_query += 'ELSE 1 END ASC';
+            search_arr_query += ' WHEN videos.user_id = follows.user_id THEN 1 ELSE 2 END ASC ';
         }
 
-        search_arr_query += ', likes DESC'
+        search_arr_query += ', active DESC'
 
         if(search.trim() != ''){
-            search_query = ` AND (users.username LIKE '%${search}%' OR 
-            videos.types @> (SELECT ARRAY[code] FROM job_categories WHERE EXISTS (SELECT 1 FROM UNNEST(titles) AS title WHERE title LIKE '%perati%'))::TEXT[]) `;
+            search_query = ` AND ( users.username LIKE '%${search}%' OR 
+            videos.types && (SELECT ARRAY[code] FROM job_categories WHERE EXISTS (SELECT 1 FROM UNNEST(titles) AS title WHERE title LIKE '%${search}%'))::TEXT[] )`;
         }
 
         var data = JSON.parse('{}');
@@ -79,7 +79,9 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
             await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, videos.is_active, videos.confirm,
                 (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-                (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views
+                (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
+                (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
+                (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
                 FROM videos INNER JOIN users ON videos.user_id = users.id 
                 WHERE users.token = '${req.params.token}'`)
             .then(videos =>{
@@ -132,14 +134,14 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         .then(countries=>{
             data.countries = countries.rows;
         });
-
-        // ARRAY[(SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int] as likes,
-        // ARRAY[(SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int] as views 
         
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
+            (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
+            (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
+            INNER JOIN follows ON users.id = follows.follower_id
             WHERE videos.index = 0 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
@@ -151,7 +153,9 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
+            (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
+            (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 1 
             AND videos.is_active=TRUE 
@@ -164,7 +168,9 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types,
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
+            (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
+            (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 2 
             AND videos.is_active=TRUE 
@@ -177,7 +183,9 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types,
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
-            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views 
+            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
+            (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
+            (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 3 
             AND videos.is_active=TRUE 
