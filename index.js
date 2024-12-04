@@ -221,14 +221,14 @@ app.post('/add-user', async(req, res) => {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
                 `INSERT INTO users (index, username, password, email, token, employment, permission) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-                [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.token, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
+                [req.body.index, req.body.user.trim(), generateMd5(`SET_USER_DATA_${req.body.password.trim()}`), req.body.email.trim(), req.body.token, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
             );
             sendMail = true;
         } else {
             if(
-                // check.rows[0].index == parseInt(req.body.index)
-                // && check.rows[0].username == req.body.username
-                // && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`)
+                check.rows[0].index == parseInt(req.body.index)
+                && check.rows[0].username == req.body.username.trim()
+                && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password.trim()}`) &&
                  !check.rows[0].confirm){
                     res.json({"name": "successful", "code": "1"});
                     sendMail = true;
@@ -259,11 +259,7 @@ app.post('/user-confirm', async(req, res) => {
     try {
         await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`)
         .then(() => {
-            // const filePath = `/data-files/${req.body.path}/`;
-            // const base64 = fs.readFileSync("./files/default_user_profile_image.png", "base64");
-            // const buffer = Buffer.from(base64, "base64");
             fs.mkdirSync(`/data-files/${req.body.path}/`);
-            // fs.writeFileSync(`/data-files/${req.body.path}/profile.png`, buffer);
             res.json({"name": "successful", "code": "0"});
         });
     } catch (err) {
