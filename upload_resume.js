@@ -5,7 +5,6 @@ const pool = require('./connection');
 const storage = multer.diskStorage({
     destination: async  (req, file, cb) => {
         try {
-            if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
             await pool.query( `UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
             cb(null, `/data-files/${req.body.path}/`);
         } catch (err) {

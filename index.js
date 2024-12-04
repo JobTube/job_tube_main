@@ -227,9 +227,10 @@ app.post('/add-user', async(req, res) => {
         } else {
             if(
                 check.rows[0].index == parseInt(req.body.index)
-                && check.rows[0].username == req.body.username
-                && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`)
-                && check.rows[0].employment == req.body.employment &&
+                // && check.rows[0].username == req.body.username
+                // && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`)
+                // && check.rows[0].employment == req.body.employment 
+                &&
                  !check.rows[0].confirm){
                     res.json({"name": "successful", "code": "1"});
                     sendMail = true;
