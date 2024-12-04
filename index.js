@@ -216,7 +216,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 app.post('/add-user', async(req, res) => {
     try {
         let sendMail = false;
-        const check = await pool.query(`SELECT index, username, password, confirm FROM users WHERE email = '${req.body.email}'`);
+        const check = await pool.query(`SELECT index, username, password, employment, confirm FROM users WHERE email = '${req.body.email}'`);
         if (!check.rows.length) {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
@@ -228,7 +228,8 @@ app.post('/add-user', async(req, res) => {
             if(
                 check.rows[0].index == parseInt(req.body.index)
                 && check.rows[0].username == req.body.username
-                && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`) &&
+                && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`)
+                && check.rows[0].employment == req.body.employment &&
                  !check.rows[0].confirm){
                     res.json({"name": "successful", "code": "1"});
                     sendMail = true;
