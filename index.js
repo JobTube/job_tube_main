@@ -221,14 +221,14 @@ app.post('/add-user', async(req, res) => {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
                 `INSERT INTO users (index, username, password, email, token, employment, permission) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-                [req.body.index, req.body.user.trim(), generateMd5(`SET_USER_DATA_${req.body.password.trim()}`), req.body.email.trim(), req.body.token, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
+                [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.token, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
             );
             sendMail = true;
         } else {
             if(
                 check.rows[0].index == parseInt(req.body.index)
-                && check.rows[0].username == req.body.username.trim()
-                && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password.trim()}`) &&
+                && check.rows[0].username == req.body.username
+                && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`) &&
                  !check.rows[0].confirm){
                     res.json({"name": "successful", "code": "1"});
                     sendMail = true;
@@ -251,6 +251,17 @@ app.post('/user-login', async(req, res) => {
             res.json({"name": "inaccessible", "code": "3"});
         }
     }catch (err) {
+        res.json(err);
+    }
+});
+
+app.post('/user-update', async(req, res) => {
+    try {
+        await pool.query(`UPDATE users SET username='${req.body.user}' WHERE token='${req.body.token}';`)
+        .then(() => {
+            res.json({"name": "successful", "code": "0"});
+        });
+    } catch (err) {
         res.json(err);
     }
 });
