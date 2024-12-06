@@ -7,13 +7,13 @@
                 }
             },
             "previewLimit": 50,
-            "server": "dpg-csks5168ii6s73809gig-a.oregon-postgres.render.com",
+            "server": "ct9kkiq3esus73e984kg-a.oregon-postgres.render.com",
             "port": 5432,
             "driver": "PostgreSQL",
-            "username": "job_tube_rzpe_user",
-            "database": "job_tube_rzpe",
-            "name": "JobTube Database",
-            "password": "bAlgwePbcXQHP16SjmM3xSEPCiww3waG"
+            "database": "job_tube_wjar",
+            "username": "job_tube_wjar_user",
+            "name": "JobTube DB",
+            "password": "72TmmtvoKHVhGBl8UqptI66qtIwGU4f1"
         }
     ]
 }
