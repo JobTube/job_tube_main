@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 const pool = require('./connection');
+const fs = require('fs');
 
 const name = uuidv4();
 const storage = multer.diskStorage({

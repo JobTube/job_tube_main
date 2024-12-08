@@ -10,4 +10,3 @@ const pool = new Pool({
 });
 
 module.exports = pool;
-//postgresql://job_tube_wjar_user:72TmmtvoKHVhGBl8UqptI66qtIwGU4f1@dpg-ct9kkiq3esus73e984kg-a.oregon-postgres.render.com/job_tube_wjar
