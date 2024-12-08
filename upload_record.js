@@ -5,8 +5,8 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: async  (req, file, cb) => {
+        const name = uuidv4();
         try {
-            const name = uuidv4();
             await pool.query(
                 `INSERT INTO videos (index, name, description, countries, types, end_date, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
                 [req.body.index, name, req.body.description, req.body.countries, req.body.types, parseInt(req.body.index) == 1 ? req.body.end : null, req.body.user]
