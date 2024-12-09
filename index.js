@@ -20,6 +20,8 @@ const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
+
+
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
         const counties = req.params.counties || '_';
@@ -54,10 +56,10 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 type_query = `${type_query.substring(0, type_query.length-1)}] `;
                 search_arr_query += type_query;
             }
-            search_arr_query += ' OR videos.user_id = follows.user_id THEN 1 ELSE 2 END ASC ';
+            search_arr_query += ' THEN 1 ELSE 2 END DESC ';
         }
         else{
-            search_arr_query += ' WHEN videos.user_id = follows.user_id THEN 1 ELSE 2 END ASC ';
+            search_arr_query += ' ELSE 1 END DESC ';
         }
 
         search_arr_query += ', active DESC';
@@ -81,6 +83,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             .then(users =>{
                 if(users.rows.length){
                     data.user = users.rows[0];
+                    search_arr_query.replace('ELSE 1', `WHEN EXISTS (SELECT 1 FROM follows WHERE user_id = users.id AND follower_id = ${users.rows[0].id}) THEN 1 ELSE 2`);
                 }
             });
 
@@ -141,19 +144,17 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         .then(countries=>{
             data.countries = countries.rows;
         });
-        
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
             (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
             FROM videos INNER JOIN users ON videos.user_id = users.id 
-            INNER JOIN follows ON users.id = follows.follower_id 
             WHERE videos.index = 0 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
-             ${search_arr_query} `)
+            ${search_arr_query} `)
         .then(job_seekers =>{
             data.job_seekers = job_seekers.rows;
         });
@@ -163,13 +164,12 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
             (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
-            FROM videos INNER JOIN users ON videos.user_id = users.id  
-            INNER JOIN follows ON users.id = follows.follower_id 
+            FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 1 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
-             ${search_arr_query} `)
+            ${search_arr_query} `)
         .then(vacancies =>{
             data.vacancies = vacancies.rows;
         });
@@ -179,13 +179,12 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
             (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
-            FROM videos INNER JOIN users ON videos.user_id = users.id  
-            INNER JOIN follows ON users.id = follows.follower_id 
+            FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 2 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
-             ${search_arr_query} `)
+            ${search_arr_query} `)
         .then(freelancers =>{
             data.freelancers = freelancers.rows;
         });
@@ -195,13 +194,12 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
             (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active 
-            FROM videos INNER JOIN users ON videos.user_id = users.id  
-            INNER JOIN follows ON users.id = follows.follower_id 
+            FROM videos INNER JOIN users ON videos.user_id = users.id 
             WHERE videos.index = 3 
             AND videos.is_active=TRUE 
             AND videos.confirm=TRUE 
             ${search_query}
-             ${search_arr_query} `)
+            ${search_arr_query} `)
         .then(talents =>{
             data.talents = talents.rows;
         });
