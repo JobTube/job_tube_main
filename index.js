@@ -72,14 +72,14 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
         var data = JSON.parse('{}');
 
         if(req.params.token == "Guest"){
-            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "email": "", "token": "", "employment": "", "permission": 0, "premium": false, "resume": false}`);
+            data.user = JSON.parse(`{"id": 0, "index": 0, "username": "Guest", "phone": "", "token": "", "employment": "", "email": "", "address": "", "permission": 0, "premium": false, "resume": false}`);
             data.videos = JSON.parse(`[]`);
             data.followers = JSON.parse(`[]`);
             data.followings = JSON.parse(`[]`);
             data.likes = JSON.parse(`[]`);
             data.views = JSON.parse(`[]`);
         }else{
-            await pool.query(`SELECT id, index, username, email, token, employment, permission, premium, resume FROM users WHERE token='${req.params.token}'`)
+            await pool.query(`SELECT id, index, username, phone, token, employment, email, address, permission, premium, resume FROM users WHERE token='${req.params.token}'`)
             .then(users =>{
                 if(users.rows.length){
                     data.user = users.rows[0];
@@ -214,30 +214,33 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
 app.post('/add-user', async(req, res) => {
     try {
-        let sendMail = false;
-        const check = await pool.query(`SELECT index, username, password, employment, confirm FROM users WHERE email = '${req.body.email}'`);
+        let sendMessage = false;
+        const check = await pool.query(`SELECT index, username, password, employment, email, address, confirm FROM users WHERE phone = '${req.body.phone}'`);
         if (!check.rows.length) {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
-                `INSERT INTO users (index, username, password, email, token, employment, permission) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-                [req.body.index, req.body.user, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.token, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
+                `INSERT INTO users (index, username, phone, token, password, email, address, employment, permission) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+                [req.body.index, req.body.user, req.body.phone, req.body.token, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.address, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
             );
-            sendMail = true;
+            sendMessage = true;
         } else {
             if(
                 check.rows[0].index == parseInt(req.body.index)
                 && check.rows[0].username == req.body.user
                 && check.rows[0].password == generateMd5(`SET_USER_DATA_${req.body.password}`)
                 && check.rows[0].employment == req.body.employment 
+                && check.rows[0].email == req.body.email 
+                && check.rows[0].address == req.body.address 
                 && !check.rows[0].confirm
             ){
                 res.json({"name": "successful", "code": "1"});
-                sendMail = true;
+                sendMessage = true;
             }else{
                 res.json({"name": "successful", "code": "2"});
             }
         }
-        if(sendMail) sendConfirmationCode("e1000.tavakkulov@gmail.com", req.body.code).catch(console.error);
+        /* Send confirm code */
+        // if(sendMessage) sendConfirmationCode("e1000.tavakkulov@gmail.com", req.body.code).catch(console.error);
     }catch (err) {
         res.json(err);
     }
@@ -245,7 +248,7 @@ app.post('/add-user', async(req, res) => {
 
 app.post('/user-login', async(req, res) => {
     try {
-        const check = await pool.query(`SELECT token FROM users WHERE password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' AND email='${req.body.email}' AND confirm = TRUE;`);
+        const check = await pool.query(`SELECT token FROM users WHERE password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' AND phone='${req.body.phone}' AND confirm = TRUE;`);
         if (check.rows.length) {
             res.json({"name": "successful", "code": check.rows[0].token});
         } else {
@@ -269,7 +272,7 @@ app.post('/user-update', async(req, res) => {
 
 app.post('/user-confirm', async(req, res) => {
     try {
-        await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND email='${req.body.email}';`)
+        await pool.query(`UPDATE users SET confirm = TRUE WHERE password='${req.body.password}' AND phone='${req.body.phone}';`)
         .then(() => {
             fs.mkdirSync(`/data-files/${req.body.path}/`);
             res.json({"name": "successful", "code": "0"});
