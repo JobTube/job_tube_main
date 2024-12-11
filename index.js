@@ -219,7 +219,7 @@ app.post('/add-user', async(req, res) => {
         if (!check.rows.length) {
             res.json({"name": "successful", "code": "0"});
             await pool.query(
-                `INSERT INTO users (index, username, phone, token, password, email, address, employment, permission) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+                `INSERT INTO users (index, username, phone, token, password, email, address, employment, permission) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
                 [req.body.index, req.body.user, req.body.phone, req.body.token, generateMd5(`SET_USER_DATA_${req.body.password}`), req.body.email, req.body.address, req.body.employment, parseInt(req.body.index) == 1 ? 3 : 1]
             );
             sendMessage = true;
