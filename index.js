@@ -140,7 +140,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             });
         });
         
-        await pool.query(`SELECT code, phone, title FROM countries ORDER BY code ASC`)
+        await pool.query(`SELECT * FROM countries ORDER BY code ASC`)
         .then(countries=>{
             data.countries = countries.rows;
         });
