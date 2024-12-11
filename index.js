@@ -140,10 +140,11 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             });
         });
         
-        await pool.query(`SELECT * FROM countries ORDER BY code ASC`)
+        await pool.query(`SELECT code, phone, title FROM countries ORDER BY code ASC`)
         .then(countries=>{
             data.countries = countries.rows;
         });
+
         await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.email, users.employment, videos.name, users.token, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
