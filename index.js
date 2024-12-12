@@ -87,7 +87,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 }
             });
 
-            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, videos.is_active, videos.confirm,
+            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, videos.is_active, videos.confirm,
                 (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
                 (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
                 (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
@@ -145,7 +145,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.countries = countries.rows;
         });
 
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.employment, videos.name, users.token, videos.countries, videos.types, 
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
@@ -160,7 +160,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.job_seekers = job_seekers.rows;
         });
 
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, 
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.description, videos.publish_date, videos.end_date, videos.countries, videos.types, 
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
@@ -175,7 +175,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.vacancies = vacancies.rows;
         });
 
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.employment, videos.name, users.token, videos.countries, videos.types,
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.countries, videos.types,
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
@@ -190,7 +190,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             data.freelancers = freelancers.rows;
         });
 
-        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.employment, videos.name, users.token, videos.countries, videos.types,
+        await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.countries, videos.types,
             (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
             (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
             (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
