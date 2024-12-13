@@ -261,12 +261,18 @@ app.post('/user-login', async(req, res) => {
 
 app.post('/user-update', async(req, res) => {
     try {
-        // const updates = [];
-        // if([null, NAN, ''].includes(req.body.password)) updates.push(`, password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}'`);
-        // if([null, NAN, ''].includes(req.body.email)) updates.push(`, email='${req.body.email}'`);
-        // if([null, NAN, ''].includes(req.body.address)) updates.push(`, address='${req.body.address}'`);
-
         await pool.query(`UPDATE users SET username='${req.body.user}', email='${req.body.email}', address='${req.body.address}' WHERE token='${req.body.token}';`)
+        .then(() => {
+            res.json({"name": "successful", "code": "0"});
+        });
+    } catch (err) {
+        res.json(err);
+    }
+});
+
+app.post('/change-pass', async(req, res) => {
+    try {
+        await pool.query(`UPDATE users SET password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' WHERE token='${req.body.token}';`)
         .then(() => {
             res.json({"name": "successful", "code": "0"});
         });
