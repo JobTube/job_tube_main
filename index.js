@@ -262,9 +262,9 @@ app.post('/user-login', async(req, res) => {
 app.post('/user-update', async(req, res) => {
     try {
         await pool.query(`UPDATE users SET username='${req.body.user}' 
-            ${ req.body.password == '' ? `` : `, password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' ` }  
-            ${ req.body.email == '' ? `` : `, email='${req.body.email}' ` } 
-            ${ req.body.address == '' ? `` : `, address='${req.body.address}' ` } 
+            ${ [null, NAN, ''].includes(req.body.password) ? `` : `, password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}' ` }  
+            ${ [null, NAN, ''].includes(req.body.email) ? `` : `, email='${req.body.email}' ` } 
+            ${ [null, NAN, ''].includes(req.body.address) ? `` : `, address='${req.body.address}' ` } 
              WHERE token='${req.body.token}';`)
         .then(() => {
             res.json({"name": "successful", "code": "0"});
