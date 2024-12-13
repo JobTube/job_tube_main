@@ -262,9 +262,9 @@ app.post('/user-login', async(req, res) => {
 app.post('/user-update', async(req, res) => {
     try {
         const updates = [];
-        if(req.body.password == 'NAN') updates.push(`, password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}'`);
-        if(req.body.email == 'NAN') updates.push(`, email='${req.body.email}'`);
-        if(req.body.address == 'NAN') updates.push(`, address='${req.body.address}}'`);
+        if([null, NAN, ''].includes(req.body.password)) updates.push(`, password='${generateMd5(`SET_USER_DATA_${req.body.password}`)}'`);
+        if([null, NAN, ''].includes(req.body.email)) updates.push(`, email='${req.body.email}'`);
+        if([null, NAN, ''].includes(req.body.address)) updates.push(`, address='${req.body.address}}'`);
 
         await pool.query(`UPDATE users SET username='${req.body.user}' ${updates.join(' ')}  WHERE token='${req.body.token}';`)
         .then(() => {
