@@ -1,15 +1,13 @@
-// const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 const pool = require('./connection');
 const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: async  (req, file, cb) => {
-        // const name = uuidv4();
         try {
             await pool.query(
                 `INSERT INTO videos (index, name, description, countries, types, end_date, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-                [req.body.index, req.body.name, req.body.description, req.body.countries, req.body.types, parseInt(req.body.index) == 1 ? req.body.end : null, req.body.user]
+                [req.body.index, req.body.name, req.body.description, req.body.countries, parseInt(req.body.index) == 3 ? 'TEXT[]' : req.body.types, parseInt(req.body.index) == 1 ? req.body.end : null, req.body.user]
             );
             if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
             cb(null, `/data-files/${req.body.path}/`);
