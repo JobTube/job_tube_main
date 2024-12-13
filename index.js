@@ -266,7 +266,7 @@ app.post('/user-update', async(req, res) => {
         // if([null, NAN, ''].includes(req.body.email)) updates.push(`, email='${req.body.email}'`);
         // if([null, NAN, ''].includes(req.body.address)) updates.push(`, address='${req.body.address}'`);
 
-        await pool.query(`UPDATE users SET username='${req.body.user}', email='${req.body.email}', address='${req.body.address}' ${updates.join(' ')}  WHERE token='${req.body.token}';`)
+        await pool.query(`UPDATE users SET username='${req.body.user}', email='${req.body.email}', address='${req.body.address}' WHERE token='${req.body.token}';`)
         .then(() => {
             res.json({"name": "successful", "code": "0"});
         });
