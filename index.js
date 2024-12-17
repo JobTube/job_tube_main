@@ -1,20 +1,12 @@
 const express = require('express');
 const fs = require('fs');
-const http = require('http');
-const bodyParser = require('body-parser');
-const ejs = require('ejs');
-const path = require('path');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extend: true }));
 
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
-app.use(express.urlencoded({ extend: true }));
-
 const pool = require('./connection');
-const sendConfirmationCode = require('./send_confirmation_code');
+// const sendConfirmationCode = require('./send_confirmation_code');
 const generateMd5 = require('./generate_code');
 const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
@@ -472,13 +464,25 @@ app.post('/add-profile/', upload_profile.single('file'), (req, res) => res.sendS
 
 app.post('/add-resume/', upload_resume.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
 
-app.get('/admin', (req, res) => {
-    res.render(
-        __dirname + '/pages/admin.ejs',
-        {
+app.get('/admin', async(req, res) => {
+    var data = JSON.parse('{}');
 
-        }
-    )
+    await pool.query('Select id, index, username, phone, employment, email, address, premium, resume From users Where confirm = TRUE;')
+    .then(users =>{
+        data.users = users.rows;
+    });
+
+    await pool.query('Select id, index, name, description, user_id, countries, types, publish_date, end_date From videos Where confirm = FALSE;')
+    .then(video =>{
+        data.video = video.rows;
+    });
+
+    await pool.query('Select id, index, name, description, user_id, countries, types, publish_date, end_date From videos Where confirm = TRUE;')
+    .then(videos =>{
+        data.videos = videos.rows;
+    });
+
+    res.json(data);
 });
 
 app.listen(3000);
