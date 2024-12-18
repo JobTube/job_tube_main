@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const fs = require('fs');
 
 const app = express();
@@ -12,7 +13,7 @@ const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
-
+app.use(cors());
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
