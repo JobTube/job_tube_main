@@ -468,22 +468,57 @@ app.post('/add-resume/', upload_resume.single('file'), (req, res) => res.sendSta
 app.get('/admin', async(req, res) => {
     var data = JSON.parse('{}');
 
-    await pool.query('Select id, index, username, phone, employment, email, address, premium, resume From users Where confirm = TRUE;')
+    await pool.query(`SELECT id, index, username, phone, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
     .then(users =>{
         data.users = users.rows;
     });
 
-    await pool.query('Select id, index, name, description, user_id, countries, types, publish_date, end_date From videos Where confirm = FALSE;')
+    await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
+        FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = FALSE;`)
     .then(video =>{
         data.video = video.rows;
     });
 
-    await pool.query('Select id, index, name, description, user_id, countries, types, publish_date, end_date From videos Where confirm = TRUE;')
+    await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
+        FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = TRUE;`)
     .then(videos =>{
         data.videos = videos.rows;
     });
 
     res.json(data);
+});
+
+app.get('/admin-confirm-video', async(req, res) => {
+    try {
+        await pool.query(`UPDATE videos SET confirm = TRUE WHERE id=${req.body.id};`)
+        .then(() => {
+            res.json({"name": "successful", "code": "0"});
+        });
+    } catch (err) {
+        res.json(err);
+    }
+});
+
+app.get('/admin-delete-video', async(req, res) => {
+    try {
+        await pool.query(`DELETE videos WHERE id=${req.body.id};`)
+        .then(() => {
+            res.json({"name": "successful", "code": "0"});
+        });
+    } catch (err) {
+        res.json(err);
+    }
+});
+
+app.get('/admin-delete-user', async(req, res) => {
+    try {
+        await pool.query(`DELETE users WHERE id=${req.body.id};`)
+        .then(() => {
+            res.json({"name": "successful", "code": "0"});
+        });
+    } catch (err) {
+        res.json(err);
+    }
 });
 
 const port = process.env.PORT || 3000;
