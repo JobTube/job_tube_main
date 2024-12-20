@@ -503,7 +503,7 @@ app.post('/admin-confirm-video', async(req, res) => {
 
 app.post('/admin-delete-video', async(req, res) => {
     try {
-        await pool.query(`DELETE videos WHERE id=$1`, [req.body.id])
+        await pool.query(`DELETE FROM videos WHERE id=$1`, [req.body.id])
         .then(() => {
             res.json({"name": "successful", "code": "0"});
         });
@@ -514,7 +514,7 @@ app.post('/admin-delete-video', async(req, res) => {
 
 app.post('/admin-delete-user', async(req, res) => {
     try {
-        await pool.query(`DELETE users WHERE id=${req.body.id};`)
+        await pool.query(`DELETE FROM users WHERE id=${req.body.id};`)
         .then(() => {
             res.json({"name": "successful", "code": "0"});
         });
