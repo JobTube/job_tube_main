@@ -470,7 +470,7 @@ app.post('/add-resume/', upload_resume.single('file'), (req, res) => res.sendSta
 app.get('/admin', async(req, res) => {
     var data = JSON.parse('{}');
 
-    await pool.query(`SELECT id, index, username, phone, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
+    await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
     .then(users =>{
         data.users = users.rows;
     });
