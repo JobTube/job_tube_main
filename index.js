@@ -490,7 +490,7 @@ app.get('/admin', async(req, res) => {
     res.json(data);
 });
 
-app.get('/admin-confirm-video', async(req, res) => {
+app.post('/admin-confirm-video', async(req, res) => {
     try {
         await pool.query(`UPDATE videos SET confirm = TRUE WHERE id=${req.body.id};`)
         .then(() => {
@@ -501,7 +501,7 @@ app.get('/admin-confirm-video', async(req, res) => {
     }
 });
 
-app.get('/admin-delete-video', async(req, res) => {
+app.post('/admin-delete-video', async(req, res) => {
     try {
         await pool.query(`DELETE videos WHERE id=$1`, [req.body.id])
         .then(() => {
@@ -512,7 +512,7 @@ app.get('/admin-delete-video', async(req, res) => {
     }
 });
 
-app.get('/admin-delete-user', async(req, res) => {
+app.post('/admin-delete-user', async(req, res) => {
     try {
         await pool.query(`DELETE users WHERE id=${req.body.id};`)
         .then(() => {
