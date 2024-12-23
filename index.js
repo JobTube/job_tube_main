@@ -15,6 +15,9 @@ const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
+console.log(generateMd5(`SET_ADMIN_DATA_adminEe-333`));
+console.log(generateMd5(`SET_TOKEN_ADMIN`));
+
 app.use(cors());
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
@@ -467,25 +470,31 @@ app.post('/add-profile/', upload_profile.single('file'), (req, res) => res.sendS
 
 app.post('/add-resume/', upload_resume.single('file'), (req, res) => res.sendStatus( req.file ? 200 : 400));
 
-app.get('/admin', async(req, res) => {
+app.post('/admin-login', async(req, res) => {
     var data = JSON.parse('{}');
+    const check = await pool.query(`SELECT COUNT(id) FROM supervisors WHERE usernmae='${req.body.username}' password='${generateMd5(`SET_ADMIN_DATA_${req.body.password}`)}'`);
+    if (check.rows.length) {
+        data.name = "successful";
 
-    await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
-    .then(users =>{
-        data.users = users.rows;
-    });
-
-    await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
-        FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = FALSE;`)
-    .then(video =>{
-        data.video = video.rows;
-    });
-
-    await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
-        FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = TRUE;`)
-    .then(videos =>{
-        data.videos = videos.rows;
-    });
+        await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
+        .then(users =>{
+            data.users = users.rows;
+        });
+    
+        await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
+            FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = FALSE;`)
+        .then(video =>{
+            data.video = video.rows;
+        });
+    
+        await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
+            FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = TRUE;`)
+        .then(videos =>{
+            data.videos = videos.rows;
+        });
+    } else {
+        data.name = "inaccessible";
+    }
 
     res.json(data);
 });
