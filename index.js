@@ -471,10 +471,11 @@ app.post('/add-resume/', upload_resume.single('file'), (req, res) => res.sendSta
 
 app.post('/admin-login', async(req, res) => {
     var data = JSON.parse('{}');
-    const check = await pool.query(`SELECT COUNT(id) as count FROM supervisors WHERE password='${generateMd5(`SET_ADMIN_DATA_${req.body.password}`)}'`);
+    const check = await pool.query(`SELECT index, username FROM supervisors WHERE password='${generateMd5(`SET_ADMIN_DATA_${req.body.password}`)}'`);
     console.log(`pass: ${generateMd5(`SET_ADMIN_DATA_${req.body.password}`)}`)
-    if (check.rows.count==1) {
+    if (check.rows.length) {
         data.name = "successful";
+        data.supervisor = check.rows[0];
 
         await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
         .then(users =>{
