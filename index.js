@@ -15,8 +15,6 @@ const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
-console.log(generateMd5(`SET_ADMIN_DATA_adminEe-333`));
-
 app.use(cors());
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
@@ -526,6 +524,14 @@ app.post('/admin-delete-user', async(req, res) => {
     try {
         await pool.query(`DELETE FROM users WHERE id=${req.body.id};`)
         .then(() => {
+            if(fs.existsSync(`/data-files/${req.body.token}/`)){
+                if(fs.readdirSync(`/data-files/${req.body.token}/`).length){
+                    fs.readdirSync(`/data-files/${req.body.token}/`).forEach(file=>{
+                        fs.unlinkSync(`/data-files/${req.body.token}/${file}`);
+                    });
+                }
+                fs.rmdirSync(`/data-files/${req.body.token}`);
+            }
             res.json({"name": "successful", "code": "0"});
         });
     } catch (err) {
