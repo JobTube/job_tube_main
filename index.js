@@ -495,7 +495,7 @@ app.post('/admin-login', async(req, res) => {
             (SELECT COUNT(*) FROM views WHERE date >= NOW() - INTERVAL '12 months') AS active 
             FROM views WHERE date >= NOW() - INTERVAL '12 months' GROUP BY month ORDER BY month`)
         .then(active => {
-            data.active = active;
+            data.active = active.rows;
         });
 
         await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
