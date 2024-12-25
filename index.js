@@ -19,12 +19,11 @@ app.use(cors());
 
 app.get('/api-example', async (req, res) => {
     try {
-      const results = await pool.query(`SELECT EXTRACT(MONTH FROM views.date) AS month, (SELECT COUNT(*) FROM likes WHERE EXTRACT(MONTH FROM likes.date) = month AND likes.date >= NOW() - INTERVAL '12 months') 
-    + (SELECT COUNT(*) FROM views WHERE EXTRACT(MONTH FROM views.date) = month AND views.date >= NOW() - INTERVAL '12 months') 
-    + (SELECT COUNT(*) FROM follows WHERE EXTRACT(MONTH FROM follows.date) = month AND follows.date >= NOW() - INTERVAL '12 months') 
-    AS active 
-GROUP BY month 
-ORDER BY month`);
+      const results = await pool.query(`SELECT EXTRACT(MONTH FROM date) AS month, 
+        (SELECT COUNT(*) FROM likes WHERE date >= NOW() - INTERVAL '12 months') +
+        (SELECT COUNT(*) FROM follows WHERE date >= NOW() - INTERVAL '12 months') + 
+        (SELECT COUNT(*) FROM views WHERE date >= NOW() - INTERVAL '12 months') AS active 
+        FROM views WHERE date >= NOW() - INTERVAL '12 months' GROUP BY month ORDER BY month`);
       res.json(results.rows); 
     } catch (error) {
       console.error(error);
@@ -490,6 +489,15 @@ app.post('/admin-login', async(req, res) => {
         data.name = "successful";
         data.supervisor = check.rows[0];
 
+        await pool.query(`SELECT EXTRACT(MONTH FROM date) AS month, 
+            (SELECT COUNT(*) FROM likes WHERE date >= NOW() - INTERVAL '12 months') +
+            (SELECT COUNT(*) FROM follows WHERE date >= NOW() - INTERVAL '12 months') + 
+            (SELECT COUNT(*) FROM views WHERE date >= NOW() - INTERVAL '12 months') AS active 
+            FROM views WHERE date >= NOW() - INTERVAL '12 months' GROUP BY month ORDER BY month`)
+        .then(active => {
+            data.active = active;
+        });
+
         await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
         .then(users =>{
             data.users = users.rows;
@@ -537,7 +545,7 @@ app.post('/admin-delete-video', async(req, res) => {
 
 app.post('/admin-delete-user', async(req, res) => {
     try {
-        await pool.query(`DELETE FROM users WHERE id=${req.body.id};`)
+        await pool.query(`DELETE FROM users WHERE id=$1`, [req.body.id])
         .then(() => {
             if(fs.existsSync(`/data-files/${req.body.token}/`)){
                 if(fs.readdirSync(`/data-files/${req.body.token}/`).length){
