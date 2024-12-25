@@ -17,20 +17,6 @@ const upload_resume = require('./upload_resume');
 
 app.use(cors());
 
-app.get('/api-example', async (req, res) => {
-    try {
-      const results = await pool.query(`SELECT EXTRACT(MONTH FROM date) AS month, 
-        (SELECT COUNT(*) FROM likes WHERE date >= NOW() - INTERVAL '12 months') +
-        (SELECT COUNT(*) FROM follows WHERE date >= NOW() - INTERVAL '12 months') + 
-        (SELECT COUNT(*) FROM views WHERE date >= NOW() - INTERVAL '12 months') AS active 
-        FROM views WHERE date >= NOW() - INTERVAL '12 months' GROUP BY month ORDER BY month`);
-      res.json(results.rows); 
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Failed to fetch data' });
-    }
-});
-
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
         const counties = req.params.counties || '_';
