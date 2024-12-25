@@ -547,13 +547,13 @@ app.post('/admin-delete-user', async(req, res) => {
     try {
         await pool.query(`DELETE FROM users WHERE id=$1`, [req.body.id])
         .then(() => {
-            if(fs.existsSync(`/data-files/${req.body.token}/`)){
-                if(fs.readdirSync(`/data-files/${req.body.token}/`).length){
-                    fs.readdirSync(`/data-files/${req.body.token}/`).forEach(file=>{
-                        fs.unlinkSync(`/data-files/${req.body.token}/${file}`);
+            if(fs.existsSync(`/data-files/${req.body.path}/`)){
+                if(fs.readdirSync(`/data-files/${req.body.path}/`).length){
+                    fs.readdirSync(`/data-files/${req.body.path}/`).forEach(file=>{
+                        fs.unlinkSync(`/data-files/${req.body.path}/${file}`);
                     });
                 }
-                fs.rmdirSync(`/data-files/${req.body.token}`);
+                fs.rmdirSync(`/data-files/${req.body.path}`);
             }
             res.json({"name": "successful", "code": "0"});
         });
