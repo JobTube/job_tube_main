@@ -17,6 +17,21 @@ const upload_resume = require('./upload_resume');
 
 app.use(cors());
 
+app.get('/api-example', async (req, res) => {
+    try {
+      const results = await pool.query(`SELECT EXTRACT(MONTH FROM views.date) AS month, (SELECT COUNT(*) FROM likes WHERE EXTRACT(MONTH FROM likes.date) = month AND likes.date >= NOW() - INTERVAL '12 months') 
+    + (SELECT COUNT(*) FROM views WHERE EXTRACT(MONTH FROM views.date) = month AND views.date >= NOW() - INTERVAL '12 months') 
+    + (SELECT COUNT(*) FROM follows WHERE EXTRACT(MONTH FROM follows.date) = month AND follows.date >= NOW() - INTERVAL '12 months') 
+    AS active 
+GROUP BY month 
+ORDER BY month`);
+      res.json(results.rows); 
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+});
+
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
         const counties = req.params.counties || '_';
@@ -93,14 +108,14 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.videos = videos.rows;
             });
 
-            await pool.query(`SELECT users.id, (SELECT username FROM users WHERE id = follows.follower_id)::TEXT username, follows.follower_id as follow, users.index  
+            await pool.query(`SELECT users.id, (SELECT username FROM users WHERE id = follows.follower_id)::TEXT username, follows.follower_id as follow, (SELECT index FROM users WHERE id = follows.follower_id)::int index  
                 FROM follows INNER JOIN users ON follows.user_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followers =>{
                 data.followers = followers.rows;
             });
 
-            await pool.query(`SELECT  users.id, (SELECT username FROM users WHERE id = follows.user_id)::TEXT username, follows.user_id as follow, users.index  
+            await pool.query(`SELECT  users.id, (SELECT username FROM users WHERE id = follows.user_id)::TEXT username, follows.user_id as follow, (SELECT index FROM users WHERE id = follows.user_id)::int index  
                 FROM follows INNER JOIN users ON follows.follower_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followings =>{
