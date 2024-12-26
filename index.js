@@ -484,19 +484,19 @@ app.post('/admin-login', async(req, res) => {
             data.active = active.rows;
         });
 
-        await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE;`)
+        await pool.query(`SELECT id, index, username, phone, token, employment, email, address, premium, resume FROM users WHERE confirm = TRUE ORDER BY id DESC;`)
         .then(users =>{
             data.users = users.rows;
         });
     
         await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
-            FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = FALSE;`)
+            FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = FALSE ORDER BY videos.id DESC;`)
         .then(video =>{
             data.video = video.rows;
         });
     
         await pool.query(`SELECT videos.id, videos.index, videos.name, videos.description, videos.user_id, videos.countries, videos.types, videos.publish_date, videos.end_date, users.token 
-            FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = TRUE;`)
+            FROM videos INNER JOIN users ON videos.user_id = users.id WHERE videos.confirm = TRUE ORDER BY videos.id DESC;`)
         .then(videos =>{
             data.videos = videos.rows;
         });
