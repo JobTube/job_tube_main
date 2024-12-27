@@ -93,14 +93,14 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.videos = videos.rows;
             });
 
-            await pool.query(`SELECT users.id, (SELECT username FROM users WHERE id = follows.follower_id)::TEXT username, follows.follower_id as follow, (SELECT index FROM users WHERE id = follows.follower_id)::int index  
+            await pool.query(`SELECT (SELECT username FROM users WHERE id = follows.follower_id)::TEXT username, follows.follower_id as follow, (SELECT index FROM users WHERE id = follows.follower_id)::int index  
                 FROM follows INNER JOIN users ON follows.user_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followers =>{
                 data.followers = followers.rows;
             });
 
-            await pool.query(`SELECT  users.id, (SELECT username FROM users WHERE id = follows.user_id)::TEXT username, follows.user_id as follow, (SELECT index FROM users WHERE id = follows.user_id)::int index  
+            await pool.query(`SELECT (SELECT username FROM users WHERE id = follows.user_id)::TEXT username, follows.user_id as follow, (SELECT index FROM users WHERE id = follows.user_id)::int index  
                 FROM follows INNER JOIN users ON follows.follower_id = users.id
                 WHERE users.token ='${req.params.token}'`)
             .then(followings =>{
@@ -531,6 +531,7 @@ app.post('/admin-delete-video', async(req, res) => {
 
 app.post('/admin-delete-user', async(req, res) => {
     try {
+        await pool.query(`DELETE FROM users WHERE follower_id=$1 OR user_id=$1`, [req.body.id]);
         await pool.query(`DELETE FROM users WHERE id=$1`, [req.body.id])
         .then(() => {
             if(fs.existsSync(`/data-files/${req.body.path}/`)){
