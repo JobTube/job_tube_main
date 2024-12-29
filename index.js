@@ -532,6 +532,9 @@ app.post('/admin-delete-video', async(req, res) => {
 app.post('/admin-delete-user', async(req, res) => {
     try {
         await pool.query(`DELETE FROM follows WHERE follower_id=$1 OR user_id=$1`, [req.body.id]);
+        await pool.query(`DELETE FROM likes WHERE user_id=$1`, [req.body.id]);
+        await pool.query(`DELETE FROM views WHERE user_id=$1`, [req.body.id]);
+
         await pool.query(`DELETE FROM users WHERE id=$1`, [req.body.id])
         .then(() => {
             if(fs.existsSync(`/data-files/${req.body.path}/`)){
