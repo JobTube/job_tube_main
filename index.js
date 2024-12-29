@@ -522,6 +522,7 @@ app.post('/admin-delete-video', async(req, res) => {
     try {
         await pool.query(`DELETE FROM videos WHERE id=$1`, [req.body.id])
         .then(() => {
+            fs.unlinkSync(`/data-files/${req.body.path}`);
             res.json({"name": "successful", "code": "0"});
         });
     } catch (err) {
@@ -531,6 +532,7 @@ app.post('/admin-delete-video', async(req, res) => {
 
 app.post('/admin-delete-user', async(req, res) => {
     try {
+        await pool.query(`DELETE FROM videos WHERE user_id=$1`, [req.body.id]);
         await pool.query(`DELETE FROM follows WHERE follower_id=$1 OR user_id=$1`, [req.body.id]);
         await pool.query(`DELETE FROM likes WHERE user_id=$1`, [req.body.id]);
         await pool.query(`DELETE FROM views WHERE user_id=$1`, [req.body.id]);
