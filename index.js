@@ -61,7 +61,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
         if(search.trim() != ''){
             search_query = ` AND ( users.username LIKE '%${search.trim()}%' OR 
-            videos.types && (SELECT ARRAY[code] FROM job_categories WHERE EXISTS (SELECT 1 FROM UNNEST(titles) AS title WHERE title LIKE '%${search.trim()}%'))::TEXT[] ) `;
+            videos.types && (SELECT ARRAY[code] FROM job_categories WHERE EXISTS (SELECT 1 FROM UNNEST(titles) AS title WHERE title LIKE '%${search.trim().toLowerCase()}%'))::TEXT[] ) `;
         }
 
         var data = JSON.parse('{}');
