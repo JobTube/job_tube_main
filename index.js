@@ -16,6 +16,12 @@ const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
+// console.log(`API::${process.env.API_KEY}`)
+
+// const t = generate_resume('TestUser', 'Tester', '', '+12345', 'generate@email', 'Address A1', 'Mən Samir Talıbov. 25 ildən artıq iş təcrübəsinə malik olan dülgərəm. 5 ildən artıqdır ki, Molla Pənah küçəsi 125A ünvanında yerləşən dülgərlik sexində xidmət göstərirəm.');
+
+// console.log(`Result::${t}`);
+
 app.use(cors());
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {

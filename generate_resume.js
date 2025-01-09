@@ -5,7 +5,8 @@ const { OpenAI } = require('openai');
 const generateClassicCV = (user, title, path, phone, email, address, data) => {
     const doc = new PDFDocument({ margin: 40 });
     doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-    doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
+    // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
+    doc.pipe(fs.createWriteStream(`resume.pdf`));
   
     doc.font('Roboto').fontSize(24).text(user, { align: 'center' });
     doc.font('Roboto').fontSize(16).fillColor('#444444').text(title, { align: 'center' });
@@ -49,7 +50,7 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
 const generateContentCV = async (description) => {
 
     const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: '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',
     });
 
     const response = await openai.chat.completions.create({
@@ -86,6 +87,7 @@ const generateCV = (user, title, path, phone, email, address, description) => {
     generateContentCV(description).then(data=>{
         try{
           const json = JSON.parse(data);
+          console.log(json);
           generateClassicCV(user, title, path, phone, email, address, json);
           return true;
         }catch (err) {
