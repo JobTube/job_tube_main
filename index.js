@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extend: true }));
 const pool = require('./connection');
 // const sendConfirmationCode = require('./send_confirmation_code');
 const generateMd5 = require('./generate_code');
+const generate_resume = require('./generate_resume');
 const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
@@ -209,7 +210,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
 
 app.post('/add-user', async(req, res) => {
     try {
-        let sendMessage = false;
+        // let sendMessage = false;
         const check = await pool.query(`SELECT index, username, password, employment, email, address, confirm FROM users WHERE phone = '${req.body.phone}'`);
         if (!check.rows.length) {
             res.json({"name": "successful", "code": "0"});
@@ -341,6 +342,24 @@ app.get('/user-resume/:token', (req, res) => {
     });
     res.send(data);
     });
+});
+
+app.post('/generate-resume', async(req, res) => {
+    try {
+        if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
+        const result = generate_resume(req.body.user, req.body.title, req.body.phone, req.body.path, req.body.email, req.body.address, req.body.description);
+        
+        if(result){
+            await pool.query( `UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`)
+            .then(() => {
+                res.json({"name": "successful", "code": "0"});
+            });
+        }else{
+            res.json({"name": "inaccessible", "code": "1"});
+        }
+    } catch (err) {
+        res.json(err);
+    }
 });
 
 app.get('/user-video/:token/:file', (req, res) => {
