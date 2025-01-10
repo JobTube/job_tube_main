@@ -4,8 +4,8 @@ const fs = require('fs');
 const generateClassicCV = (user, title, path, phone, email, address, data) => {
     const doc = new PDFDocument({ margin: 40 });
     doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-    doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-    // doc.pipe(fs.createWriteStream(`files/resume.pdf`));
+    // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
+    doc.pipe(fs.createWriteStream(`files/resume.pdf`));
   
     doc.font('Roboto').fontSize(24).text(user, { align: 'center' });
     doc.font('Roboto').fontSize(16).fillColor('#444444').text(title, { align: 'center' });
@@ -30,6 +30,12 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
     doc.fontSize(12).text(data.values.summary, { align: 'justify' });
   
     doc.moveDown(1);
+
+    data.values.languages.length ? doc.fontSize(14).fillColor('#000000').text(data.headers.head_language, { underline: true }) : null;
+    data.values.languages.forEach(language => {
+      doc.fontSize(12).text(`• ${language}`, { width: 500, align: 'justify' });
+      doc.moveDown(0.5);
+    });
   
     data.values.educations.length ? doc.fontSize(14).fillColor('#000000').text(data.headers.head_education, { underline: true }) : null;
     data.values.educations.forEach(education => {
