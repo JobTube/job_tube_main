@@ -1,12 +1,11 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const { OpenAI } = require('openai');
 
 const generateClassicCV = (user, title, path, phone, email, address, data) => {
     const doc = new PDFDocument({ margin: 40 });
     doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-    // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-    doc.pipe(fs.createWriteStream(`resume.pdf`));
+    doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
+    // doc.pipe(fs.createWriteStream(`files/resume.pdf`));
   
     doc.font('Roboto').fontSize(24).text(user, { align: 'center' });
     doc.font('Roboto').fontSize(16).fillColor('#444444').text(title, { align: 'center' });
@@ -14,9 +13,9 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
     doc.moveDown(1);
   
     doc.fontSize(14).fillColor('#000000').text(data.headers.head_contact, { underline: true });
-    doc.fontSize(12).text(phone);
-    doc.text(email);
-    doc.text(address);
+    doc.fontSize(12).text(`${data.headers.head_phone}: ${phone}`);
+    email.length ? doc.text(`${data.headers.head_email}: ${email}`) : null;
+    address.length ? doc.text(`${data.headers.head_address}: ${address}`) : null;
   
     doc.moveDown(1);
   
@@ -47,53 +46,4 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
     doc.end();
 };
 
-const generateContentCV = async (description) => {
-
-    const openai = new OpenAI({
-      apiKey: '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',
-    });
-
-    const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-        { role: "system", content: "You are a resume content generator." },
-        { role: "user", content: `Based on the description below, generate values adn headers ​​within the json code for the professional resume in in the language in which the description is written. The required value have to been filled. If there is no information, the optional values can be left blank. However, in any case, the value must remain in its string array or string type. Then the headers ​​must be translated into the language in which the description is written: '${description}'
-            {
-            values:
-            {
-                skills: ['required'],
-                summary: 'required.',
-                languages: ['optional'],
-                educations: ['optional'],
-                experience: ['optional'],
-            },
-            headers: {
-                head_contact: 'Contact',
-                head_skills: 'Skills',
-                head_summary: 'Summary',
-                head_languages: 'Languages',
-                head_education: 'Education',
-                head_experience: 'Experience',
-            }
-            }`,
-        },
-        ],
-        max_tokens: 1000,
-    });
-    return response.choices[0].message.content;
-}
-
-const generateCV = (user, title, path, phone, email, address, description) => {
-    generateContentCV(description).then(data=>{
-        try{
-          const json = JSON.parse(data);
-          console.log(json);
-          generateClassicCV(user, title, path, phone, email, address, json);
-          return true;
-        }catch (err) {
-          return false;
-        }
-    });
-}
-
-module.exports = generateCV;
+module.exports = generateClassicCV;
