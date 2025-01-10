@@ -379,7 +379,7 @@ app.post('/generate-resume', async(req, res) => {
 
         res.json({"name": "successful", "code": "0"});
     }catch (err) {
-        res.json(err);
+        res.json({"name": "inaccessible", "code": "0"});
     }
 
     // generate_content_ai(req.body.description)
