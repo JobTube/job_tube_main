@@ -4,8 +4,7 @@ const fs = require('fs');
 const generateClassicCV = (user, title, path, phone, email, address, data) => {
     const doc = new PDFDocument({ margin: 40 });
     doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-    // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-    doc.pipe(fs.createWriteStream(`files/resume.pdf`));
+    doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
   
     doc.font('Roboto').fontSize(24).text(user, { align: 'center' });
     doc.font('Roboto').fontSize(16).fillColor('#444444').text(title, { align: 'center' });

@@ -33,29 +33,6 @@ const upload_resume = require('./upload_resume');
 
 // test();
 
-
-
-// console.log(`API::${process.env.OPENAI_API_KEY}`)
-
-// generate_resume('TestUser', 'Tester', '', '+12345', 'generate@email', 'Address A1', 'Mən Samir Talıbov. 25 ildən artıq iş təcrübəsinə malik olan dülgərəm. 5 ildən artıqdır ki, Molla Pənah küçəsi 125A ünvanında yerləşən dülgərlik sexində xidmət göstərirəm.')
-//     .then(result => { console.log(`Result::${result}`); });
-
-
-
-    // const generateCV = async (user, title, path, phone, email, address, description) => {
-    //     await generateContentCV(description).then(data => {
-    //         try{
-    //           const json = JSON.parse(data);
-    //           console.log(json);
-    //           generateClassicCV(user, title, path, phone, email, address, json);
-    //           return 0;
-    //         }catch (err) {
-    //           return 1;
-    //         }
-    //     });
-    // }
-
-
 app.use(cors());
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
@@ -396,37 +373,6 @@ app.post('/generate-resume', async(req, res) => {
     }catch (err) {
         res.json({"name": "inaccessible", "code": "0"});
     }
-
-    // generate_content_ai(req.body.description)
-    // .then(data => {
-    //     try{
-    //         const generatedContent = await generate_content_ai(req.body.description);
-    //         const json = JSON.parse(generatedContent);
-    //         if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
-
-    //         const json = JSON.parse(data);
-    //         generate_resume(req.body.user, req.body.title, req.body.path, req.body.phone, req.body.email, req.body.address, json);
-    //         // await pool.query( `UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
-    //         res.json({"name": "successful", "code": "0"});
-    //     }catch (err) {
-    //         res.json(err);
-    //     }
-    // });
-    // try {
-    //     if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
-    //     const result = generate_resume(req.body.user, req.body.title, req.body.phone, req.body.path, req.body.email, req.body.address, req.body.description);
-        
-    //     if(result){
-    //         await pool.query( `UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`)
-    //         .then(() => {
-    //             res.json({"name": "successful", "code": "0"});
-    //         });
-    //     }else{
-    //         res.json({"name": "inaccessible", "code": "1"});
-    //     }
-    // } catch (err) {
-    //     res.json(err);
-    // }
 });
 
 app.get('/user-video/:token/:file', (req, res) => {
