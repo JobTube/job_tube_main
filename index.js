@@ -24,7 +24,7 @@ const upload_resume = require('./upload_resume');
 //         const json = JSON.parse(generatedContent);
 //         console.log(json);
 //         // if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
-//         await generate_resume('Emin Təvəkkülov', 'Developer', '', '+9943489223', '', '', json);
+//         await generate_resume[4]('Emin Təvəkkülov', 'Developer', '', '+9943489223', '', '', json);
 //         // await pool.query(`UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
 //     }catch (err) {
 //         console.log(`ERROR::${err}`);
@@ -366,7 +366,8 @@ app.post('/generate-resume', async(req, res) => {
         const generatedContent = await generate_content_ai(req.body.description);
         const json = JSON.parse(generatedContent);
         if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
-        await generate_resume(req.body.user, req.body.title, req.body.path, req.body.phone, req.body.email, req.body.address, json);
+        await generate_resume[parseInt(req.body.index)]
+            (req.body.user,req.body.title, req.body.path, req.body.phone, req.body.email, req.body.address, json);
         await pool.query(`UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
 
         res.json({"name": "successful", "code": "0"});
