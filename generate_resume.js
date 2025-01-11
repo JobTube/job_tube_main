@@ -10,7 +10,7 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
     doc.font('Roboto').fontSize(24).text(user, { align: 'center' });
     doc.font('Roboto').fontSize(16).fillColor('#444444').text(title, { align: 'center' });
 
-    fs.existsSync(`files/profile.png`) ? doc.image('files/profile.png', 50, 25, { width: 100, height: 100 }) : null;
+    fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 50, 25, { width: 100, height: 100 }) : null;
   
     doc.moveDown(3);
   
@@ -66,7 +66,7 @@ const generateElegantCV = (user, title, path, phone, email, address, data) => {
   doc.font('Roboto').fontSize(28).fillColor('#333333').text(user, { align: 'center' });
   doc.font('Roboto').fontSize(16).fillColor('#777777').text(title, { align: 'center' });
 
-  fs.existsSync(`files/profile.png`) ? doc.image('files/profile.png', 50, 25, { width: 100, height: 100 }) : null;
+  fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 50, 25, { width: 100, height: 100 }) : null;
 
   doc.moveDown(3);
 
@@ -123,7 +123,7 @@ const generateModernCV = (user, title, path, phone, email, address, data) => {
   doc.font('Roboto').fontSize(24).fillColor('#FFFFFF').text(user, 50, 50);
   doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(title, 50, 75);
 
-  fs.existsSync(`files/profile.png`) ? doc.image('files/profile.png', 500, 15, { width: 100, height: 100 }) : null;
+  fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 500, 15, { width: 100, height: 100 }) : null;
 
   doc.moveDown(3);
 
@@ -180,7 +180,7 @@ const generateCreativeCV = (user, title, path, phone, email, address, data) => {
   doc.font('Roboto').fontSize(28).fillColor('#FFFFFF').text(user, 50, 30);
   doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(title, 50, 70);
 
-  fs.existsSync(`files/profile.png`) ? doc.image('files/profile.png', 500, 15, { width: 100, height: 100 }) : null;
+  fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 500, 15, { width: 100, height: 100 }) : null;
 
   doc.moveDown(3);
 
@@ -237,7 +237,7 @@ const generateColorfulCV = (user, title, path, phone, email, address, data) => {
   doc.font('Roboto').fontSize(28).fillColor('#FFFFFF').text(user, 50, 30);
   doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(title, 50, 70);
 
-  fs.existsSync(`files/profile.png`) ? doc.image('files/profile.png', 500, 15, { width: 100, height: 100 }) : null;
+  fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 500, 15, { width: 100, height: 100 }) : null;
 
   doc.moveDown(4);
 

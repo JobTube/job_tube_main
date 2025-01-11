@@ -18,21 +18,6 @@ const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
-// const test = async () => {
-//     try{
-//         const generatedContent = await generate_content_ai('Azərbaycan Dövlət Neft və Sənae Üniversiteti-nin İnformasiya Texnologiyaları və İdarəetmə Fakültəsində Bakalavr(2013-2017) və Magistr (2017-2019) dərəcələrini qazanmışam. Azərbaycan Respublikası Mərkəzi Bankı-nın yay təcrübə proqramında (2019) iştirak etmişəm. FANFİ MMC şirkətində (2021-2022) Proqramçı (Back-edn developer) olaraq çalışmışam. Hal hazırda IT Freelancer olaraq  çalışıram. İngilis və Rus dillərində səlis danışa bilirəm. IT bacarıqlarıma: HTML, CSS, JS, Node js, Java, Spring, PHP və Larawel daxildir.');
-//         const json = JSON.parse(generatedContent);
-//         console.log(json);
-//         // if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
-//         await generate_resume[4]('Emin Təvəkkülov', 'Developer', '', '+9943489223', '', '', json);
-//         // await pool.query(`UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
-//     }catch (err) {
-//         console.log(`ERROR::${err}`);
-//     }
-// }
-
-// test();
-
 app.use(cors());
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
