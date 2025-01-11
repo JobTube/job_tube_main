@@ -4,8 +4,7 @@ const fs = require('fs');
 const generateClassicCV = (user, title, path, phone, email, address, data) => {
     const doc = new PDFDocument({ margin: 40 });
     doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-    // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-    doc.pipe(fs.createWriteStream(`files/resume.pdf`));
+    doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
     
   
     doc.font('Roboto').fontSize(24).text(user, { align: 'center' });
@@ -62,8 +61,7 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
 const generateElegantCV = (user, title, path, phone, email, address, data) => {
   const doc = new PDFDocument({ margin: 40 });
   doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-  // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-  doc.pipe(fs.createWriteStream(`files/resume.pdf`));
+  doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
 
   doc.font('Roboto').fontSize(28).fillColor('#333333').text(user, { align: 'center' });
   doc.font('Roboto').fontSize(16).fillColor('#777777').text(title, { align: 'center' });
@@ -119,8 +117,7 @@ const generateElegantCV = (user, title, path, phone, email, address, data) => {
 const generateModernCV = (user, title, path, phone, email, address, data) => {
   const doc = new PDFDocument({ margin: 40 });
   doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-  // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-  doc.pipe(fs.createWriteStream(`files/resume.pdf`));
+  doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
 
   doc.rect(0, 0, 612, 130).fill('#007ACC');
   doc.font('Roboto').fontSize(24).fillColor('#FFFFFF').text(user, 50, 50);
@@ -177,8 +174,7 @@ const generateModernCV = (user, title, path, phone, email, address, data) => {
 const generateCreativeCV = (user, title, path, phone, email, address, data) => {
   const doc = new PDFDocument({ margin: 40 });
   doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-  // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-  doc.pipe(fs.createWriteStream(`files/resume.pdf`));
+  doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
 
   doc.rect(0, 0, 612, 130).fill('#FF5722');
   doc.font('Roboto').fontSize(28).fillColor('#FFFFFF').text(user, 50, 30);
@@ -235,8 +231,7 @@ const generateCreativeCV = (user, title, path, phone, email, address, data) => {
 const generateColorfulCV = (user, title, path, phone, email, address, data) => {
   const doc = new PDFDocument({ margin: 40 });
   doc.registerFont('Roboto', 'files/Roboto-Regular.ttf');
-  // doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
-  doc.pipe(fs.createWriteStream(`files/resume.pdf`));
+  doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
 
   doc.rect(0, 0, 612, 130).fill('#4CAF50');
   doc.font('Roboto').fontSize(28).fillColor('#FFFFFF').text(user, 50, 30);
