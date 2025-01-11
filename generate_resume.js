@@ -15,7 +15,7 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
     doc.moveDown(3);
   
     doc.font('Roboto').fontSize(14).fillColor('#000000').text(data.headers.head_contact, { underline: true });
-    doc.font('Roboto').fontSize(12).text(`${data.headers.head_phone}: ${phone}`);
+    doc.font('Roboto').fontSize(12).text(`${data.headers.head_phone}: +${phone}`);
     email.length ? doc.text(`${data.headers.head_email}: ${email}`) : null;
     address.length ? doc.text(`${data.headers.head_address}: ${address}`) : null;
   
@@ -71,7 +71,7 @@ const generateElegantCV = (user, title, path, phone, email, address, data) => {
   doc.moveDown(3);
 
   doc.font('Roboto').fontSize(14).fillColor('#333333').text('Contact');
-  doc.font('Roboto').fontSize(12).text(`${data.headers.head_phone}: ${phone}`);
+  doc.font('Roboto').fontSize(12).text(`${data.headers.head_phone}: +${phone}`);
   email.length ? doc.text(`${data.headers.head_email}: ${email}`) : null;
   address.length ? doc.text(`${data.headers.head_address}: ${address}`) : null;
 
@@ -128,7 +128,7 @@ const generateModernCV = (user, title, path, phone, email, address, data) => {
   doc.moveDown(3);
 
   doc.font('Roboto').fontSize(14).fillColor('#007ACC').text('Contact');
-  doc.fillColor('#000000').fontSize(12).text(`${data.headers.head_phone}: ${phone}`);
+  doc.fillColor('#000000').fontSize(12).text(`${data.headers.head_phone}: +${phone}`);
   email.length ? doc.text(`${data.headers.head_email}:: ${email}`) : null;
   address.length ? doc.text(`${data.headers.head_address}:: ${address}`) : null;
 
@@ -185,7 +185,7 @@ const generateCreativeCV = (user, title, path, phone, email, address, data) => {
   doc.moveDown(3);
 
   doc.font('Roboto').fontSize(14).fillColor('#FF5722').text(data.headers.head_contact);
-  doc.font('Roboto').fontSize(12).fillColor('#000000').text(`${data.headers.head_phone}: ${phone}`);
+  doc.font('Roboto').fontSize(12).fillColor('#000000').text(`${data.headers.head_phone}: +${phone}`);
   email.length ? doc.text(`${data.headers.head_email}: ${email}`) : null;
   address.length ? doc.text(`${data.headers.head_address}: ${address}`) : null;
 
@@ -242,7 +242,7 @@ const generateColorfulCV = (user, title, path, phone, email, address, data) => {
   doc.moveDown(4);
 
   doc.font('Roboto').fontSize(14).fillColor('#4CAF50').text(data.headers.head_contact);
-  doc.font('Roboto').fontSize(12).fillColor('#000000').text(`${data.headers.head_phone}: ${phone}`);
+  doc.font('Roboto').fontSize(12).fillColor('#000000').text(`${data.headers.head_phone}: +${phone}`);
   email.length ? doc.text(`${data.headers.head_email}: ${email}`) : null;
   address.length ? doc.text(`${data.headers.head_address}: ${email}`) : null;
 
