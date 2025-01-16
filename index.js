@@ -14,11 +14,28 @@ const pool = require('./connection');
 const generateMd5 = require('./generate_code');
 const generate_resume = require('./generate_resume');
 const generate_content_ai = require('./generate_content_ai');
+const generate_questions_ai = require('./generate_questions_ai');
 const upload_profile = require('./upload_profile');
 const upload_record = require('./upload_record');
 const upload_resume = require('./upload_resume');
 
 app.use(cors());
+
+// const test = async () => {
+//     try{
+//         const generatedContent = await generate_content_ai('Mən Emin Təvəkkülov. Azərbaycan Dövlət Neft və Sənae Üniversiteti-nin İnformasiya Texnologiyaları və İdarəetmə Fakültəsində Bakalavr(2013-2017) və Magistr (2017-2019) dərəcələrini qazanmışam. Azərbaycan Respublikası Mərkəzi Bankı-nın yay təcrübə proqramında (2019) iştirak etmişəm. FANFİ MMC şirkətində (2021-2022) Proqramçı (Back-edn developer) olaraq çalışmışam. Hal hazırda IT Freelancer olaraq  çalışıram. İngilis və Rus dillərində səlis danışa bilirəm. IT bacarıqlarıma: HTML, CSS, JS, Node js, Java, Spring, PHP və Larawel daxildir.');
+//         const json = JSON.parse(generatedContent);
+//         console.log(json);
+//         const questions = await generate_questions_ai(json.headers.head_question, 'Web developer');
+//         const question_json = JSON.parse(questions);
+//         console.log(question_json);
+//         await generate_resume[0]('Emin Tavakkulov','Web Developer', '', '+012356', '', '', json);
+//     }catch(err){
+//         console.log(err);
+//     }
+// }
+
+// test();
 
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
@@ -348,16 +365,30 @@ app.get('/user-resume/:token', (req, res) => {
 
 app.post('/generate-resume', async(req, res) => {
     try{
-        const generatedContent = await generate_content_ai(req.body.description);
-        const json = JSON.parse(generatedContent);
-        if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
-        await generate_resume[parseInt(req.body.index)]
-            (req.body.user,req.body.title, req.body.path, req.body.phone, req.body.email, req.body.address, json);
-        await pool.query(`UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
-
-        res.json({"name": "successful", "code": "0"});
+        if(req.body.description == ''){
+            res.json({"name": "inaccessible", "code": "1"});
+        }else{
+            const generatedContent = await generate_content_ai(req.body.description);
+            const json = JSON.parse(generatedContent);
+            if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
+            await generate_resume[parseInt(req.body.index)]
+                (req.body.user,req.body.title, req.body.path, req.body.phone, req.body.email, req.body.address, json);
+            await pool.query(`UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
+    
+            let questions = [];
+            if(req.body.employment != ''){
+                const generate_questions = await generate_questions_ai(json.headers.head_question, req.body.employment);
+                const json_question = JSON.parse(generate_questions);
+                questions = [json_question.header];
+                json_question.questions_answers.forEach(item => {
+                    questions.push(`${item.question}\n\n${item.answer}`);
+                });
+            }
+    
+            res.json({"name": "successful", "code": "0", "data": questions });
+        }
     }catch (err) {
-        res.json({"name": "inaccessible", "code": "0"});
+        res.json({"name": "inaccessible", "code": "3"});
     }
 });
 
