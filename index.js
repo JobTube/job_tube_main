@@ -380,8 +380,8 @@ app.post('/generate-resume', async(req, res) => {
                 const generate_questions = await generate_questions_ai(json.headers.head_question, req.body.employment);
                 const json_question = JSON.parse(generate_questions);
                 questions = [json_question.header];
-                json_question.questions_answers.forEach(item => {
-                    questions.push(`${item.question}\n\n${item.answer}`);
+                json_question.questions_answers.forEach((item, index) => {
+                    questions.push(`${index+1}${item.question}\n• ${item.answer}\n`);
                 });
             }
     
