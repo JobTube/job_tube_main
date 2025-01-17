@@ -1,7 +1,7 @@
 const { OpenAI } = require('openai');
 require('dotenv').config();
 
-const generateContentCV = async (description) => {
+const generateContentCV = async (description, title) => {
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -32,6 +32,7 @@ const generateContentCV = async (description) => {
                 head_languages: 'Languages',
                 head_education: 'Education',
                 head_experience: 'Experience',
+                head_title: '${title}',
                 head_question: 'Questions employers may ask',
             }
             }`,

@@ -368,16 +368,16 @@ app.post('/generate-resume', async(req, res) => {
         if(req.body.description == ''){
             res.json({"name": "inaccessible", "code": "1"});
         }else{
-            const generatedContent = await generate_content_ai(req.body.description);
+            const generatedContent = await generate_content_ai(req.body.description, req.body.title);
             const json = JSON.parse(generatedContent);
             if (!fs.existsSync(`/data-files/${req.body.path}/`)) fs.mkdirSync(`/data-files/${req.body.path}/`);
             await generate_resume[parseInt(req.body.index)]
-                (req.body.user,req.body.title, req.body.path, req.body.phone, req.body.email, req.body.address, json);
+                (req.body.user, req.body.title, req.body.path, req.body.phone, req.body.email, req.body.address, json);
             await pool.query(`UPDATE users SET resume = TRUE WHERE token='${req.body.path}';`);
     
             let questions = [];
-            if(req.body.employment != ''){
-                const generate_questions = await generate_questions_ai(json.headers.head_question, req.body.employment);
+            if(req.body.title != ''){
+                const generate_questions = await generate_questions_ai(json.headers.head_question, req.body.title);
                 const json_question = JSON.parse(generate_questions);
                 questions = [json_question.header];
                 json_question.questions_answers.forEach((item, index) => {

@@ -8,7 +8,7 @@ const generateClassicCV = (user, title, path, phone, email, address, data) => {
     
   
     doc.font('Roboto').fontSize(24).text(user, { align: 'center' });
-    title.length ? doc.font('Roboto').fontSize(16).fillColor('#444444').text(title, { align: 'center' }) : null;
+    title.length ? doc.font('Roboto').fontSize(16).fillColor('#444444').text(data.headers.head_title, { align: 'center' }) : null;
 
     fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 50, 25, { width: 100, height: 100 }) : null;
   
@@ -64,7 +64,7 @@ const generateElegantCV = (user, title, path, phone, email, address, data) => {
   doc.pipe(fs.createWriteStream(`/data-files/${path}/resume.pdf`));
 
   doc.font('Roboto').fontSize(28).fillColor('#333333').text(user, { align: 'center' });
-  title.length ? doc.font('Roboto').fontSize(16).fillColor('#777777').text(title, { align: 'center' }) : null;
+  title.length ? doc.font('Roboto').fontSize(16).fillColor('#777777').text(data.headers.head_title, { align: 'center' }) : null;
 
   fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 50, 25, { width: 100, height: 100 }) : null;
 
@@ -121,7 +121,7 @@ const generateModernCV = (user, title, path, phone, email, address, data) => {
 
   doc.rect(0, 0, 612, 130).fill('#007ACC');
   doc.font('Roboto').fontSize(24).fillColor('#FFFFFF').text(user, 50, 50);
-  title.length ? doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(title, 50, 75): null;
+  title.length ? doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(data.headers.head_title, 50, 75): null;
 
   fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 500, 15, { width: 100, height: 100 }) : null;
 
@@ -178,7 +178,7 @@ const generateCreativeCV = (user, title, path, phone, email, address, data) => {
 
   doc.rect(0, 0, 612, 130).fill('#FF5722');
   doc.font('Roboto').fontSize(28).fillColor('#FFFFFF').text(user, 50, 30);
-  title.length ? doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(title, 50, 70) : null;
+  title.length ? doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(data.headers.head_title, 50, 70) : null;
 
   fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 500, 15, { width: 100, height: 100 }) : null;
 
@@ -235,7 +235,7 @@ const generateColorfulCV = (user, title, path, phone, email, address, data) => {
 
   doc.rect(0, 0, 612, 130).fill('#4CAF50');
   doc.font('Roboto').fontSize(28).fillColor('#FFFFFF').text(user, 50, 30);
-  title.length ? doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(title, 50, 70) : null;
+  title.length ? doc.font('Roboto').fontSize(16).fillColor('#FFFFFF').text(data.headers.head_title, 50, 70) : null;
 
   fs.existsSync(`/data-files/${path}/profile.png`) ? doc.image(`/data-files/${path}/profile.png`, 500, 15, { width: 100, height: 100 }) : null;
 
