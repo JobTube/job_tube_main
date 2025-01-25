@@ -107,8 +107,15 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
             AND 
             videos.is_active=TRUE 
             AND videos.confirm=TRUE`)
-            .then(followers =>{
-                data.followers = followers.rows;
+            .then(follower_videos =>{
+                data.followers = follower_videos.rows;
+            });
+
+            await pool.query(`SELECT id as user_id, username, phone, email, address, resume, employment, token FROM users 
+            WHERE users.id = ANY(SELECT follows.follower_id as id FROM follows INNER JOIN users ON follows.user_id = users.id WHERE users.token ='${req.params.token}') 
+            AND (SELECT COUNT(*) FROM videos WHERE user_id = users.id)::int = 0`)
+            .then(follower_users =>{
+                data.followers = data.followers.concat(follower_users.rows);
             });
 
             await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.countries, videos.types, 
@@ -121,9 +128,17 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 AND 
                 videos.is_active=TRUE 
                 AND videos.confirm=TRUE`)
-            .then(followings =>{
-                data.followings = followings.rows;
+            .then(followings_videos =>{
+                data.followings = followings_videos.rows;
             });
+            
+            await pool.query(`SELECT id as user_id, username, phone, email, address, resume, employment, token FROM users 
+            WHERE users.id = ANY(SELECT follows.user_id as id FROM follows INNER JOIN users ON follows.follower_id = users.id WHERE users.token ='${req.params.token}') 
+            AND (SELECT COUNT(*) FROM videos WHERE user_id = users.id)::int = 0`)
+            .then(following_users =>{
+                data.followings = data.followings.concat(following_users.rows);
+            });
+    
 
             await pool.query(`SELECT likes.id, likes.video_id as video 
                 FROM likes INNER JOIN users ON likes.user_id = users.id
