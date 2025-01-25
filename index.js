@@ -111,7 +111,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.followers = follower_videos.rows;
             });
 
-            await pool.query(`SELECT 0 as id, 0 as index, 0 as likes, 0 as views, id as user_id, username, phone, email, address, resume, employment, token FROM users 
+            await pool.query(`SELECT 0 as id, 0 as index, 0 as likes, 0 as views, id as user_id, username, phone, email, address, resume, employment, token, '{}'::TEXT[] as countries, '{}'::TEXT[] as types FROM users 
             WHERE users.id = ANY(SELECT follows.follower_id as id FROM follows INNER JOIN users ON follows.user_id = users.id WHERE users.token ='${req.params.token}') 
             AND (SELECT COUNT(*) FROM videos WHERE user_id = users.id)::int = 0`)
             .then(follower_users =>{
@@ -132,7 +132,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.followings = followings_videos.rows;
             });
             
-            await pool.query(`SELECT 0 as id, 0 as index, 0 as likes, 0 as views, id as user_id,  id as user_id, username, phone, email, address, resume, employment, token FROM users 
+            await pool.query(`SELECT 0 as id, 0 as index, 0 as likes, 0 as views, id as user_id,  id as user_id, username, phone, email, address, resume, employment, token, '{}'::TEXT[] as countries, '{}'::TEXT[] as types FROM users 
             WHERE users.id = ANY(SELECT follows.user_id as id FROM follows INNER JOIN users ON follows.follower_id = users.id WHERE users.token ='${req.params.token}') 
             AND (SELECT COUNT(*) FROM videos WHERE user_id = users.id)::int = 0`)
             .then(following_users =>{
