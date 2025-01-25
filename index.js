@@ -21,22 +21,6 @@ const upload_resume = require('./upload_resume');
 
 app.use(cors());
 
-// const test = async () => {
-//     try{
-//         const generatedContent = await generate_content_ai('Mən Emin Təvəkkülov. Azərbaycan Dövlət Neft və Sənae Üniversiteti-nin İnformasiya Texnologiyaları və İdarəetmə Fakültəsində Bakalavr(2013-2017) və Magistr (2017-2019) dərəcələrini qazanmışam. Azərbaycan Respublikası Mərkəzi Bankı-nın yay təcrübə proqramında (2019) iştirak etmişəm. FANFİ MMC şirkətində (2021-2022) Proqramçı (Back-edn developer) olaraq çalışmışam. Hal hazırda IT Freelancer olaraq  çalışıram. İngilis və Rus dillərində səlis danışa bilirəm. IT bacarıqlarıma: HTML, CSS, JS, Node js, Java, Spring, PHP və Larawel daxildir.');
-//         const json = JSON.parse(generatedContent);
-//         console.log(json);
-//         const questions = await generate_questions_ai(json.headers.head_question, 'Web developer');
-//         const question_json = JSON.parse(questions);
-//         console.log(question_json);
-//         await generate_resume[0]('Emin Tavakkulov','Web Developer', '', '+012356', '', '', json);
-//     }catch(err){
-//         console.log(err);
-//     }
-// }
-
-// test();
-
 app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
     try {
         const counties = req.params.counties || '_';
@@ -113,16 +97,30 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 data.videos = videos.rows;
             });
 
-            await pool.query(`SELECT (SELECT username FROM users WHERE id = follows.follower_id)::TEXT username, follows.follower_id as follow, (SELECT index FROM users WHERE id = follows.follower_id)::int index  
-                FROM follows INNER JOIN users ON follows.user_id = users.id
-                WHERE users.token ='${req.params.token}'`)
+            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.countries, videos.types, 
+            (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
+            (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
+            (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
+            (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active
+            FROM videos INNER JOIN users ON videos.user_id = users.id 
+            WHERE users.id = ANY(SELECT follows.follower_id as id FROM follows INNER JOIN users ON follows.user_id = users.id WHERE users.token ='${req.params.token}') 
+            AND 
+            videos.is_active=TRUE 
+            AND videos.confirm=TRUE`)
             .then(followers =>{
                 data.followers = followers.rows;
             });
 
-            await pool.query(`SELECT (SELECT username FROM users WHERE id = follows.user_id)::TEXT username, follows.user_id as follow, (SELECT index FROM users WHERE id = follows.user_id)::int index  
-                FROM follows INNER JOIN users ON follows.follower_id = users.id
-                WHERE users.token ='${req.params.token}'`)
+            await pool.query(`SELECT videos.id, videos.index, videos.user_id, users.username, users.phone, users.email, users.address, users.resume, users.employment, videos.name, users.token, videos.countries, videos.types, 
+                (SELECT COUNT(id) FROM likes WHERE video_id = videos.id )::int as likes, 
+                (SELECT COUNT(id) FROM views WHERE video_id = videos.id )::int as views, 
+                (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
+                (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active
+                FROM videos INNER JOIN users ON videos.user_id = users.id 
+                WHERE users.id = ANY(SELECT follows.follower_id as id FROM follows INNER JOIN users ON follows.follower_id = users.id WHERE users.token ='${req.params.token}') 
+                AND 
+                videos.is_active=TRUE 
+                AND videos.confirm=TRUE`)
             .then(followings =>{
                 data.followings = followings.rows;
             });
