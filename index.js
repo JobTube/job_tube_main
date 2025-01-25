@@ -117,7 +117,7 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 (SELECT COUNT(*) FROM likes WHERE video_id = videos.id) + 
                 (SELECT COUNT(*) FROM views WHERE video_id = videos.id) AS active
                 FROM videos INNER JOIN users ON videos.user_id = users.id 
-                WHERE users.id = ANY(SELECT follows.follower_id as id FROM follows INNER JOIN users ON follows.follower_id = users.id WHERE users.token ='${req.params.token}') 
+                WHERE users.id = ANY(SELECT follows.user_id as id FROM follows INNER JOIN users ON follows.follower_id = users.id WHERE users.token ='${req.params.token}') 
                 AND 
                 videos.is_active=TRUE 
                 AND videos.confirm=TRUE`)
