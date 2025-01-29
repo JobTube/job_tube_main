@@ -357,11 +357,14 @@ app.get('/delete-files', (req, res) => {
 });
 
 app.get('/read-files', (req, res) => {
-    fs.readdirSync('/data-files/').forEach(folder => {
+    console.log('-- Reading:\n');
+    fs.readdirSync('/').forEach(folder => {
         console.log(`-- ${folder}`);
-        fs.readdirSync(`/data-files/${folder}`).forEach(file=>{
-            console.log(`-- -- ${file}`);
-        });
+        if (!fs.existsSync(`/${folder}/`)){
+            fs.readdirSync(`/${folder}`).forEach(file=>{
+                console.log(`-- -- ${file}`);
+            });
+        }
     });
     res.send('Readed');
 });
