@@ -48,12 +48,37 @@ app.get('/data/:token/:counties?/:types?/:search?', async (req, res) => {
                 search_arr_query += ' OR ';
             }
             if(types_arr.length){
-                let type_query = ' videos.types && ARRAY['
+                let type_query = ''
                 types_arr.forEach(type => {
                     type_query += `'${type}',`
                 });
-                type_query = `${type_query.substring(0, type_query.length-1)}] `;
-                search_arr_query += type_query;
+                type_query = type_query.substring(0, type_query.length-1);
+                search_arr_query += ` videos.types && ARRAY[${type_query}] `;
+
+                if(req.params.token != "Guest"){
+                    let selected_species = types_arr;
+                    let user_species = '';
+                    await pool.query(`SELECT selected_species FROM users WHERE token = '${req.params.token}'`)
+                    .then(spiecies =>{
+                        spiecies.rows[0].selected_species.forEach(specie => {
+                            user_species += `'${specie}',`;
+                            if(!selected_species.includes(specie)) {
+                                selected_species.push(specie);
+                            }
+                        });
+                    });
+
+                    if(!user_species.length){
+                        user_species = user_species.substring(0, user_species.length-1);
+                        search_arr_query += ` OR ARRAY[${user_species}] && ARRAY[${type_query}] `;
+                    }
+
+                    selected_species = selected_species.slice(0, 10);
+                    let insert_species = '';
+                    selected_species.forEach(insert => insert_species += `"${insert}",`);
+                    insert_species = insert_species.substring(0, insert_species.length-1);
+                    await pool.query(`UPDATE users SET selected_species = '{${insert_species}}' WHERE token = '${req.params.token}'`);
+                }
             }
             search_arr_query += ' THEN 1 ELSE 2 END DESC ';
         }
