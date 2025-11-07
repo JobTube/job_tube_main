@@ -2,7 +2,7 @@ const transporter = require("./transporter");
 
 async function sendConfirmationCode(mail, code) {
     const info = await transporter.sendMail({
-        from: '"JobTube Confirmation Code" <e1000.space@gmail.com>',
+        from: '"JobTube Confirmation Code" <gmail.com>',
         to: mail,
         subject: "Confirmation",
         text: `Confirmation code: ${code}`,
